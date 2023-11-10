@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">newsApp721447</string>
+    <string name="network_refresh">Refreshing page</string>
+    <string name="user_account">Log in, log out or register</string>
+
+<!--    <string name="general_price">&#8364; %s</string>-->
+    <string name="general_unknown_error">Unknown error</string>
+
+    <string name="article_title">Product catalog</string>
+    <string name="article_image_description">Image of %s</string>
+    <string name="article_error_fetching_categories">Could not fetch categories, try again later</string>
+
+<!--    <string name="product_detail_rating">Product rating: %s (%s votes)</string>-->
+    <string name="article_detail_image_description">Image of %s</string>
+    <string name="article_detail_category">Category: %s</string>
+<!--    <string name="product_detail_rate">Rate:</string>-->
+<!--    <string name="product_detail_rate_description">Click to rate %s</string>-->
+<!--    <string name="product_detail_rating_error">Something went wrong with voting</string>-->
+</resources>
