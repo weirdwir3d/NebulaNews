@@ -45,13 +45,14 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import nl.aldera.newsapp721447.R
-import nl.aldera.newsapp721447.presentation.viewModels.PopupViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AuthenticationForm
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.ArticleContainerState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.IsPopupShowingState
+import nl.aldera.newsapp721447.presentation.viewModels.ui.navigation.AppNavigation
+import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.AccountPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticleDetailsPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticlesPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
@@ -61,7 +62,6 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.theme.NewsApp721447The
 class MainActivity : ComponentActivity() {
 
     private val userViewModel: UserViewModel by viewModels()
-    private val popupViewModel: PopupViewModel by viewModels()
 
     @SuppressLint("StateFlowValueCalledInComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,12 +73,32 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+//                    AppNavigation()
+                    Log.e("INFO", "main activity")
+                    AccountPage()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //                    val isPopupShown: MutableState<Boolean> = mutableStateOf(false)
                     val popupMutableState = MutableStateFlow<Boolean>(false)
 //                    val state: StateFlow<ArticleContainerState> = mutableState
 
-                    val popUpState by popupViewModel.popupState.collectAsState()
                     val registerState by userViewModel.registerState.collectAsState()
                     val sessionState by userViewModel.sessionState.collectAsState()
                     var isPopupVisible by remember { mutableStateOf(false) }
@@ -86,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
                     val snackBarHostState = remember { SnackbarHostState() }
 
-                    ArticleDetailsPage()
+//                    ArticleDetailsPage()
 
                     when (val updatedPopupState = popupMutableState.value) {
                         true -> {
@@ -95,6 +115,7 @@ class MainActivity : ComponentActivity() {
                         Log.i("POPUP INFO", "hide popup")
                         }
                     }
+
 //                    ArticlesPage(
 //                        onArticlesPageClick = {}
 //                    ) {}
@@ -176,9 +197,9 @@ class MainActivity : ComponentActivity() {
 ////                                        }
 ////                                    }
 //                                }
-
-
-
+//
+//
+//
 //                                val scope = rememberCoroutineScope()
 //
 //                                when (val userViewModelState = registerState.Success) {

@@ -30,7 +30,7 @@ fun ArticleList(allArticlesContainer: AllArticlesContainer) {
             .padding(8.dp)
     ) {
         ArticleItem(allArticlesContainer.Results[0]) {
-            //TODO: am i supposed to do smth here?
+            //
         }
     }
 }

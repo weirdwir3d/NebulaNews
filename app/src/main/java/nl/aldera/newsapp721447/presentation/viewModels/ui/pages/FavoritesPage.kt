@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
-import nl.aldera.newsapp721447.presentation.viewModels.PopupViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
 
 

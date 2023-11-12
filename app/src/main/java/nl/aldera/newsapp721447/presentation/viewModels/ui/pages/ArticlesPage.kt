@@ -63,6 +63,7 @@ import com.wearetriple.exercise6.ui.page.main.component.ErrorMessage
 import com.wearetriple.exercise6.ui.page.main.component.LoadingIndicator
 import nl.aldera.newsapp721447.RetrofitInstance
 import nl.aldera.newsapp721447.data.api.NewsApi
+import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
 import okhttp3.FormBody
@@ -73,9 +74,8 @@ import retrofit2.create
 @SuppressLint("ServiceCast")
 @Composable
 fun ArticlesPage(
-    onArticlesPageClick: () -> Unit,
     viewModel: AllArticlesContainerViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    onItemClick: (Int) -> Unit
+    onItemClick: (Article) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
 
@@ -88,11 +88,12 @@ fun ArticlesPage(
     ) {
         Column(Modifier.padding(it)) {
 
+
             when (val state = state) {
                 is MainPageState.Loading -> LoadingIndicator()
                 is MainPageState.Success -> ArticleList(
                     allArticlesContainer = state.allArticlesContainer,
-                    onItemClick = { article -> onItemClick(article.Id) }
+                    onItemClick = onItemClick
                 )
 
                 is MainPageState.Error -> ErrorMessage()

@@ -36,10 +36,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import nl.aldera.newsapp721447.R
-import nl.aldera.newsapp721447.presentation.viewModels.PopupViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -85,6 +85,9 @@ fun AppScaffold(
                     }
                     IconButton(onClick = { /*TODO*/ }) {
                         Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favorites")
+                    }
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = "Account")
                     }
                 }
             )
