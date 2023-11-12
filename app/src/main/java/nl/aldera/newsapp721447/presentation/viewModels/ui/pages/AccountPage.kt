@@ -144,7 +144,9 @@ fun AccountPage(
                         Text(text = "Log out",
                             modifier = Modifier
                                 .clickable {
-                                    //TODO: Log out
+                                    sessionState.AuthToken = null
+                                    sessionState.UserName = null
+                                    Log.i("INFO", "üser logged out")
                                 })
                     }
 
