@@ -13,21 +13,22 @@ import com.wearetriple.exercise6.ui.page.main.component.ErrorMessage
 import com.wearetriple.exercise6.ui.page.main.component.LoadingIndicator
 import nl.aldera.newsapp721447.presentation.viewModels.ArticleViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
+import nl.aldera.newsapp721447.presentation.viewModels.ui.component.ArticleDetails
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.ArticleContainerState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
 
 @Composable
 fun ArticleDetailsPage(
-//    navController: NavController,
-//    Id: Int
+    navController: NavController,
+    Id: Int,
     viewModel: ArticleViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ) {
 
     val state by viewModel.state.collectAsState()
 
-    LaunchedEffect(Unit) {
-        viewModel.getArticle()
-    }
+//    LaunchedEffect(Unit) {
+//        viewModel.getArticle()
+//    }
 
     AppScaffold(
         title = "Details",
@@ -36,10 +37,10 @@ fun ArticleDetailsPage(
 
             when (val state = state) {
                 is ArticleContainerState.Loading -> LoadingIndicator()
-                is ArticleContainerState.Success -> ArticleList(
-                    allArticlesContainer = state.allArticlesContainer,
-                    onItemClick = {}
-                )
+                is ArticleContainerState.Success -> ArticleDetails(article = state.allArticlesContainer.Results[0])
+//                is ArticleContainerState.Success -> ArticleList(
+//                    allArticlesContainer = state.allArticlesContainer
+//                )
 
                 is ArticleContainerState.Error -> ErrorMessage()
                 else -> {}

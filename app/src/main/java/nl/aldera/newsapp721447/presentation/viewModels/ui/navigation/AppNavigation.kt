@@ -19,11 +19,8 @@ fun AppNavigation() {
     ) {
         composable("articles") {
             ArticlesPage(
-                onArticlesPageClick = {
-                    navController.navigate("articles")
-                },
                 onItemClick = {
-                    navController.navigate("articles/$it")
+                    navController.navigate("articles/${it.Id}")
                 }
             )
         }
@@ -34,8 +31,8 @@ fun AppNavigation() {
             )
         ) {
             ArticleDetailsPage(
-//                navController = navController,
-//                Id = it.arguments?.getInt("Id") ?: -1
+                navController = navController,
+                Id = it.arguments?.getInt("Id") ?: -1
             )
         }
         composable(
