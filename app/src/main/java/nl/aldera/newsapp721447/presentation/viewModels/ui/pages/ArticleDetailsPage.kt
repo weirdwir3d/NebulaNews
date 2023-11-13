@@ -8,41 +8,55 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import com.wearetriple.exercise6.ui.page.main.component.ArticleItem
 import com.wearetriple.exercise6.ui.page.main.component.ArticleList
 import com.wearetriple.exercise6.ui.page.main.component.ErrorMessage
 import com.wearetriple.exercise6.ui.page.main.component.LoadingIndicator
 import nl.aldera.newsapp721447.presentation.viewModels.ArticleViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.ArticleDetails
+import nl.aldera.newsapp721447.presentation.viewModels.ui.component.ArticleDetailsBox
+import nl.aldera.newsapp721447.presentation.viewModels.ui.component.NavigationType
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.ArticleContainerState
+import nl.aldera.newsapp721447.presentation.viewModels.ui.model.DetailState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
 
 @Composable
 fun ArticleDetailsPage(
-    navController: NavController,
     Id: Int,
-    viewModel: ArticleViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    viewModel: ArticleViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    onBackPressed: () -> Unit
 ) {
 
     val state by viewModel.state.collectAsState()
 
-//    LaunchedEffect(Unit) {
-//        viewModel.getArticle()
-//    }
+    LaunchedEffect(Unit) {
+        viewModel.getArticle(Id)
+    }
 
     AppScaffold(
-        title = "Details",
+        title = "Details", navigation = NavigationType.Back(onBackPressed)
     ) {
         Column(Modifier.padding(it)) {
 
-            when (val state = state) {
-                is ArticleContainerState.Loading -> LoadingIndicator()
-                is ArticleContainerState.Success -> ArticleDetails(article = state.allArticlesContainer.Results[0])
+//            when (val state = state) {
+//                is ArticleContainerState.Loading -> LoadingIndicator()
 //                is ArticleContainerState.Success -> ArticleList(
 //                    allArticlesContainer = state.allArticlesContainer
 //                )
+//
+//                is ArticleContainerState.Error -> ErrorMessage()
+//                else -> {}
+//            }
 
-                is ArticleContainerState.Error -> ErrorMessage()
+            when (val state = state) {
+                is DetailState.Loading -> LoadingIndicator()
+                is DetailState.Success -> ArticleDetailsBox(article = state.article)
+//                is DetailState.Success -> ArticleItem(item = state.article) {
+//                    
+//                }
+
+                is DetailState.Error -> ErrorMessage()
                 else -> {}
             }
 

@@ -8,5 +8,5 @@ import nl.aldera.newsapp721447.data.model.Article
 fun ArticleDetails(
     article : Article
 ) {
-    Text(text = article.Title)
+    article.Title?.let { Text(text = it) }
 }

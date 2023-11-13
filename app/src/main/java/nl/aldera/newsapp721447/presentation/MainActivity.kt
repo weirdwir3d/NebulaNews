@@ -73,9 +73,12 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-//                    AppNavigation()
-                    Log.e("INFO", "main activity")
-                    AccountPage()
+                    AppNavigation()
+//                    Log.e("INFO", "main activity")
+//                    AccountPage()
+//                    ArticlesPage(
+//                        onItemClick = {}
+//                    )
 
 
 

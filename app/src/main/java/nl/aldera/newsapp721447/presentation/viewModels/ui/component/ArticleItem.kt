@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
@@ -43,16 +44,19 @@ fun ArticleItem(
                     modifier = Modifier
                         .size(80.dp)
                         .padding(8.dp),
+                    placeholder = painterResource(R.drawable.placeholder),
                     model = item.Image,
                     contentDescription = stringResource(R.string.article_image_description),
                     contentScale = ContentScale.Fit
                 )
 
                 Column(Modifier.padding(end = 8.dp)) {
-                    Text(
-                        text = item.Title,
-                        style = MaterialTheme.typography.headlineSmall
-                    )
+                    item.Title?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.headlineSmall
+                        )
+                    }
 //                    Text(
 //                        text = stringResource(
 //                            R.string.exercise6_price,

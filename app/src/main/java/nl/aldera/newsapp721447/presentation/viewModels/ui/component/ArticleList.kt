@@ -1,5 +1,6 @@
 package com.wearetriple.exercise6.ui.page.main.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -25,12 +26,13 @@ fun ArticleList(allArticlesContainer: AllArticlesContainer, onItemClick: (Articl
 
 @Composable
 fun ArticleList(allArticlesContainer: AllArticlesContainer) {
+    var article = allArticlesContainer.Results[0]
     Column(
         modifier = Modifier
             .padding(8.dp)
     ) {
-        ArticleItem(allArticlesContainer.Results[0]) {
-            //
+        ArticleItem(article) {
+            Log.i("article info", "article id: " + article.Id + "article title: " + article.Title)
         }
     }
 }

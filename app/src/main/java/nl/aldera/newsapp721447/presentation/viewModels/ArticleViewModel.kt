@@ -11,10 +11,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import nl.aldera.newsapp721447.data.api.NewsApi
 import nl.aldera.newsapp721447.data.mapper.ResponseMapper
+import nl.aldera.newsapp721447.data.mapper.SingleArticleMapper
 import nl.aldera.newsapp721447.data.model.AllArticlesContainer
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.extension.flatten
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.ArticleContainerState
+import nl.aldera.newsapp721447.presentation.viewModels.ui.model.DetailState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -34,14 +36,18 @@ class ArticleViewModel @Inject constructor(
     private val api = retrofit.create<NewsApi>()
 
     private val responseMapper = ResponseMapper()
-    private val mutableState = MutableStateFlow<ArticleContainerState>(ArticleContainerState.Loading)
-    val state: StateFlow<ArticleContainerState> = mutableState
+    private val singleArticleMapper = SingleArticleMapper()
+//    private val mutableState = MutableStateFlow<ArticleContainerState>(ArticleContainerState.Loading)
+//    val state: StateFlow<ArticleContainerState> = mutableState
+
+    private val mutableState = MutableStateFlow<DetailState>(DetailState.Loading)
+    val state: StateFlow<DetailState> = mutableState
 
     init {
         viewModelScope.launch {
-            savedStateHandle.getStateFlow("articleId", -1)
-                .collectLatest { articleId ->
-//                    getArticle(articleId)
+            savedStateHandle.getStateFlow("Id", -1)
+                .collectLatest { Id ->
+                    getArticle(Id).onSuccess { mutableState.value = DetailState.Success(it) }
                 }
         }
     }
@@ -67,14 +73,19 @@ class ArticleViewModel @Inject constructor(
 //        }
     }
 
+    suspend fun getArticle(Id : Int): Result<Article> {
+        return runCatching {
+            api.getArticle(Id)
+        }
+            .map(responseMapper::map).flatten()
+            .map(singleArticleMapper::mapOneArticle).flatten()
+
+    }
+
 //    suspend fun getArticle(articleId : Int): Result<Article> {
 //        return runCatching { api.getArticle(articleId)
 //            .onSuccess()
 //        }
 //            .map(responseMapper::map).flatten()
 //    }
-}
-
-private fun <T> Response<T>.onSuccess() {
-    TODO("Not yet implemented")
 }

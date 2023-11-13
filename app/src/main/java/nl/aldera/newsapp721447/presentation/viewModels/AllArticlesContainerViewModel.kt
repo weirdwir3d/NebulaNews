@@ -57,26 +57,16 @@ class AllArticlesContainerViewModel : ViewModel() {
         }
     }
 
-//    suspend fun getArticles(): Result<AllArticlesContainer> {
-//        return runCatching { api.getArticles() }
-//    }
-
     suspend fun getArticles(): Result<AllArticlesContainer> {
         return runCatching { api.getArticles() }
             .map(responseMapper::map).flatten()
 //            .map(articleContainerMapper::mapList).flatten()
     }
 
-//    fun fetchAllArticlesContainer() {
-//        viewModelScope.launch {
-//            try {
-//                val allArticlesContainer = repository.getArticles()
-//                _allArticlesContainer.value = allArticlesContainer
-//            } catch (e: Exception) {
-//                //TODO: Handle error
-//            }
-//        }
+    //    suspend fun getArticles(): Result<AllArticlesContainer> {
+//        return runCatching { api.getArticles() }
 //    }
+
 }
 
 
