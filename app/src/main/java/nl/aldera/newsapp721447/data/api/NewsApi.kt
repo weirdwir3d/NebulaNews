@@ -19,7 +19,7 @@ interface NewsApi {
     @GET("api/Articles/{Id}")
     suspend fun getArticle(
         @Path("Id") Id: Int
-    ): Response<Article>
+    ): Response<AllArticlesContainer>
 
     @FormUrlEncoded
     @POST("api/Users/register")

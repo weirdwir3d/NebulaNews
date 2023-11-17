@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.AccountPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticleDetailsPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticlesPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
@@ -21,7 +22,8 @@ fun AppNavigation() {
             ArticlesPage(
                 onItemClick = {
                     navController.navigate("articles/${it.Id}")
-                }
+                },
+                navController = navController
             )
         }
         composable(
@@ -31,18 +33,29 @@ fun AppNavigation() {
             )
         ) {
             ArticleDetailsPage(
-                navController = navController,
-                Id = it.arguments?.getInt("Id") ?: -1
-            )
+                Id = it.arguments?.getInt("Id") ?: -1,
+                navController = navController
+            ) {
+                navController.popBackStack()
+            }
         }
         composable(
             route = "favorites",
             arguments = listOf(
-                navArgument("username") {type = NavType.StringType}
+                navArgument("username") {type = NavType.StringType},
+                navArgument("token") {type = androidx.navigation.NavType.StringType}
             )
         ) {
             FavoritesPage(
-//                navController = navController,
+                navController = navController,
+//                username = it.arguments?.getString("username") ?: ""
+            )
+        }
+        composable(
+            route = "account",
+        ) {
+            AccountPage(
+                navController = navController
 //                username = it.arguments?.getString("username") ?: ""
             )
         }

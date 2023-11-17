@@ -1,17 +1,25 @@
 package com.wearetriple.exercise6.ui.page.main.component
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import nl.aldera.newsapp721447.data.model.AllArticlesContainer
 import nl.aldera.newsapp721447.data.model.Article
+import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 
 @Composable
-fun ArticleList(allArticlesContainer: AllArticlesContainer, onItemClick: (Article) -> Unit) {
+fun ArticleList(
+    allArticlesContainer: AllArticlesContainer,
+    onItemClick: (Article) -> Unit
+) {
+
     LazyColumn(contentPadding = PaddingValues(8.dp)) {
 
         items(allArticlesContainer.Results.size) { index ->
@@ -23,14 +31,15 @@ fun ArticleList(allArticlesContainer: AllArticlesContainer, onItemClick: (Articl
     }
 }
 
-@Composable
-fun ArticleList(allArticlesContainer: AllArticlesContainer) {
-    Column(
-        modifier = Modifier
-            .padding(8.dp)
-    ) {
-        ArticleItem(allArticlesContainer.Results[0]) {
-            //
-        }
-    }
-}
+//@Composable
+//fun ArticleList(allArticlesContainer: AllArticlesContainer) {
+//    var article = allArticlesContainer.Results[0]
+//    Column(
+//        modifier = Modifier
+//            .padding(8.dp)
+//    ) {
+//        ArticleItem(userViewModel, article) {
+//            Log.i("article info", "article id: " + article.Id + "article title: " + article.Title)
+//        }
+//    }
+//}

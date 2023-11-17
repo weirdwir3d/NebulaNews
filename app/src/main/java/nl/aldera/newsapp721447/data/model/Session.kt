@@ -1,6 +1,7 @@
 package nl.aldera.newsapp721447.data.model
 
 data class Session(
-    val UserName: String?,
-    val AuthToken: String?
-)
+    var UserName: String?,
+    var AuthToken: String?
+) {
+}

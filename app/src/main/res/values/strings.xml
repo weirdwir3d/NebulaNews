@@ -13,7 +13,9 @@
 <!--    <string name="product_detail_rating">Product rating: %s (%s votes)</string>-->
     <string name="article_detail_image_description">Image of %s</string>
     <string name="article_detail_category">Category: %s</string>
-<!--    <string name="product_detail_rate">Rate:</string>-->
+    <string name="navigate_up">Navigate up</string>
+    <string name="navigate_back">Navigate back</string>
+    <!--    <string name="product_detail_rate">Rate:</string>-->
 <!--    <string name="product_detail_rate_description">Click to rate %s</string>-->
 <!--    <string name="product_detail_rating_error">Something went wrong with voting</string>-->
 </resources>
