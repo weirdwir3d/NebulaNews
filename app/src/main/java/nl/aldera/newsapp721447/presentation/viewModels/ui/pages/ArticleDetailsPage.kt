@@ -23,6 +23,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
 
 @Composable
 fun ArticleDetailsPage(
+    navController : NavController,
     Id: Int,
     viewModel: ArticleViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     onBackPressed: () -> Unit
@@ -35,7 +36,9 @@ fun ArticleDetailsPage(
     }
 
     AppScaffold(
-        title = "Details", navigation = NavigationType.Back(onBackPressed)
+        title = "Details",
+        navigation = NavigationType.Back(onBackPressed),
+        navController = navController
     ) {
         Column(Modifier.padding(it)) {
 

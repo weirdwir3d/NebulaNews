@@ -34,12 +34,18 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.wearetriple.exercise6.ui.page.main.component.ArticleList
+import com.wearetriple.exercise6.ui.page.main.component.ErrorMessage
+import com.wearetriple.exercise6.ui.page.main.component.LoadingIndicator
 import kotlinx.coroutines.delay
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
+import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountPage(
+    navController : NavController,
     userViewModel: UserViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
     ) {
 
@@ -55,72 +61,75 @@ fun AccountPage(
     var loginResultMessage by remember { mutableStateOf("") }
     var resultMessageColor by remember { mutableStateOf(Color.Green) }
 
-    Column(verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxHeight(0.5f)
-            .fillMaxWidth()
-
+    AppScaffold(
+        title = "account",
+        navController = navController
     ) {
-                    Column(verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.CenterHorizontally) {
-                        OutlinedTextField(
-                            value = UserName,
-                            onValueChange = {UserName = it},
-                            label = { Text("Username") }
-                        )
-                        OutlinedTextField(
-                            value = Password,
-                            onValueChange = {Password = it},
-                            label = { Text("Password") },
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                            visualTransformation = PasswordVisualTransformation(),
-                        )
+        Column(verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .padding(it)
+                .fillMaxSize()
+        ) {
+                Column(verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally) {
+                    OutlinedTextField(
+                        value = UserName,
+                        onValueChange = {UserName = it},
+                        label = { Text("Username") }
+                    )
+                    OutlinedTextField(
+                        value = Password,
+                        onValueChange = {Password = it},
+                        label = { Text("Password") },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                        visualTransformation = PasswordVisualTransformation(),
+                    )
 
-                        Spacer(modifier = Modifier.size(16.dp))
-                        Button(onClick = {
-                            if (isRegisterState) {
-                                var codeResult = userViewModel.registerUser(UserName, Password)
-                            } else if (!sessionState.AuthToken.isNullOrBlank()) {
-                                loginResultMessage = "Log out before logging in again"
-                            } else {
-                                var codeResult = userViewModel.loginUser(UserName, Password)
-                            }
-                        }) {
-                            Text(text = if (isRegisterState) "Register" else "Login")
+                    Spacer(modifier = Modifier.size(16.dp))
+                    Button(onClick = {
+                        if (isRegisterState) {
+                            var codeResult = userViewModel.registerUser(UserName, Password)
+                        } else if (!sessionState.AuthToken.isNullOrBlank()) {
+                            loginResultMessage = "Log out before logging in again"
+                        } else {
+                            var codeResult = userViewModel.loginUser(UserName, Password)
                         }
+                    }) {
+                        Text(text = if (isRegisterState) "Register" else "Login")
+                    }
 
-                        LaunchedEffect(registerState) {
-                            Log.e("INFO", "launched")
-                            if (registerState.Success) {
-                                registerResultMessage = "Registration successful! Log in to start using your account"
-                            } else {
-                                registerResultMessage = "Registration failed. Account with this username already exists"
-                            }
+                    LaunchedEffect(registerState) {
+                        Log.e("INFO", "launched")
+                        if (registerState.Success) {
+                            registerResultMessage = "Registration successful! Log in to start using your account"
+                        } else {
+                            registerResultMessage = "Registration failed. Account with this username already exists"
                         }
+                    }
 
-                        Text(registerResultMessage)
+                    Text(registerResultMessage)
 
-                        LaunchedEffect(sessionState) {
-                            Log.e("INFO", "launched")
-                            if (!sessionState.AuthToken.isNullOrBlank()) {
-                                loginResultMessage = "Login successful!"
-                                UserName = ""
-                                Password = ""
-                            } else {
-                                loginResultMessage = "Login failed. Username or password incorrect"
-                            }
+                    LaunchedEffect(sessionState) {
+                        Log.e("INFO", "launched")
+                        if (!sessionState.AuthToken.isNullOrBlank()) {
+                            loginResultMessage = "Login successful!"
+                            UserName = ""
+                            Password = ""
+                        } else {
+                            loginResultMessage = "Login failed. Username or password incorrect"
                         }
+                    }
 
-                        Text(loginResultMessage)
+                    Text(loginResultMessage)
 //                        resultMsg(number = 9)
 //                        Text(text = if (registerState.Success) "Registration successful! Log in to start using your account"
 //                            else "Registration failed. Account with this username already exists")
 
 //                        Text(text = if (!registerState.Success && registerState.Message.isNotEmpty()) "Registration failed. Account with this username already exists"
 //                        else "Registration successful! Log in to start using your account")
-                        Log.e("INFO", "registration state from AccountPage: " + registerState.toString())
-                        //    Button(onClick = {
+                    Log.e("INFO", "registration state from AccountPage: " + registerState.toString())
+                    //    Button(onClick = {
 //        if (buttonText == "Log in") {
 //            resultMessage = userViewModel.loginUser(UserName, Password)
 //        } else {
@@ -130,110 +139,31 @@ fun AccountPage(
 //    }) {
 //        Text(text = buttonText)
 //    }
-                        
-                        
-                        Spacer(modifier = Modifier.size(8.dp))
-                        Text(color = Color.Blue,
-                            text = if (isRegisterState) "Login" else "Register",
-                            modifier = Modifier
-                                .clickable {
-                                    isRegisterState = !isRegisterState
-                                })
-                        
-                        Spacer(modifier = Modifier.size(14.dp))
-                        Text(text = "Log out",
-                            modifier = Modifier
-                                .clickable {
-                                    sessionState.AuthToken = null
-                                    sessionState.UserName = null
-                                    Log.i("INFO", "üser logged out")
-                                })
-                    }
 
+
+                    Spacer(modifier = Modifier.size(8.dp))
+                    Text(color = Color.Blue,
+                        text = if (isRegisterState) "Login" else "Register",
+                        modifier = Modifier
+                            .clickable {
+                                isRegisterState = !isRegisterState
+                            })
+
+                    Spacer(modifier = Modifier.size(14.dp))
+                    Text(text = "Log out",
+                        modifier = Modifier
+                            .clickable {
+                                sessionState.AuthToken = null
+                                sessionState.UserName = null
+                                Log.i("INFO", "üser logged out")
+                            })
+                }
+
+
+
+        }
     }
 
-
-    //TODO: start form
-//    Row(
-//        modifier = Modifier
-//            .fillMaxHeight(0.2f)
-//            .fillMaxWidth(),
-//        horizontalArrangement = Arrangement.SpaceEvenly
-//    ){
-//        Box(
-//            modifier = Modifier
-//                .fillMaxHeight(0.2f)
-//                .fillMaxWidth(0.5f)
-//                .background(Color.Green)
-//                .clickable {
-//                    buttonText = "Log in"
-//                }
-//        ) {
-//
-//            Text("Log in")
-//        }
-//
-//        Box(
-//            modifier = Modifier
-//                .fillMaxHeight()
-//                .fillMaxWidth(0.5f)
-//                .background(Color.Yellow)
-//                .clickable {
-//                    buttonText = "Register"
-//                }
-//        ) {
-//
-//            Text("Register")
-//        }
-//    }
-//
-//    Spacer(modifier = Modifier.height(16.dp))
-//
-//    OutlinedTextField(
-//        value = UserName,
-//        onValueChange = { UserName = it },
-//        label = { Text("username") },
-//        keyboardOptions = KeyboardOptions.Default
-//    )
-//
-//    Spacer(modifier = Modifier.height(16.dp))
-//
-//    OutlinedTextField(
-//        value = Password,
-//        onValueChange = { Password = it },
-//        label = { Text("password") },
-//        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-//        visualTransformation = PasswordVisualTransformation()
-//    )
-//
-//    Spacer(modifier = Modifier.height(16.dp))
-//
-//    if (resultMessage.isNotEmpty()) {
-//        var color : Color
-//        if (resultMessage.startsWith("Wrong") or resultMessage.startsWith("Username")) {
-//            Log.i("INFO", "IS ERROR")
-//            color = Color.Red
-//        } else {
-//            Log.i("INFO", "IS NOT ERROR")
-//            color = Color.Green
-//        }
-//        Text(
-//            resultMessage,
-//            color = color,
-////                style = MaterialTheme.typography.h6
-//        )
-//    }
-//
-//    Button(onClick = {
-//        if (buttonText == "Log in") {
-//            resultMessage = userViewModel.loginUser(UserName, Password)
-//        } else {
-//            resultMessage = userViewModel.registerUser(UserName, Password)
-//        }
-//
-//    }) {
-//        Text(text = buttonText)
-//    }
 }
 
 @Composable

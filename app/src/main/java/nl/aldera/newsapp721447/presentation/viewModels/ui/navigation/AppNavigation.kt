@@ -22,7 +22,8 @@ fun AppNavigation() {
             ArticlesPage(
                 onItemClick = {
                     navController.navigate("articles/${it.Id}")
-                }
+                },
+                navController = navController
             )
         }
         composable(
@@ -32,7 +33,8 @@ fun AppNavigation() {
             )
         ) {
             ArticleDetailsPage(
-                Id = it.arguments?.getInt("Id") ?: -1
+                Id = it.arguments?.getInt("Id") ?: -1,
+                navController = navController
             ) {
                 navController.popBackStack()
             }
@@ -45,19 +47,15 @@ fun AppNavigation() {
             )
         ) {
             FavoritesPage(
-//                navController = navController,
+                navController = navController,
 //                username = it.arguments?.getString("username") ?: ""
             )
         }
         composable(
             route = "account",
-            arguments = listOf(
-                navArgument("username") {type = NavType.StringType},
-                navArgument("token") {type = androidx.navigation.NavType.StringType}
-            )
         ) {
             AccountPage(
-//                navController = navController,
+                navController = navController
 //                username = it.arguments?.getString("username") ?: ""
             )
         }

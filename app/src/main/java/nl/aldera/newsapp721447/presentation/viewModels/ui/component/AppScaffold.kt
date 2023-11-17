@@ -27,12 +27,14 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.ui.res.painterResource
+import androidx.navigation.NavController
 import nl.aldera.newsapp721447.R
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppScaffold(
+    navController : NavController,
     title: String,
     navigation: NavigationType? = null,
     content: @Composable (PaddingValues) -> Unit
@@ -51,16 +53,6 @@ fun AppScaffold(
                             contentDescription = stringResource(R.string.network_refresh)
                         )
                     }
-
-                    IconButton(onClick = {
-                        //TODO: fix this
-//                        showPopup()
-                    }) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = stringResource(R.string.user_account)
-                        )
-                    }
                 }
             )
         },
@@ -70,13 +62,19 @@ fun AppScaffold(
             AppScaffoldBottomBar(
                 title = title,
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        navController.navigate("articles")
+                    }) {
                         Icon(imageVector = Icons.Outlined.Home, contentDescription = "Home")
                     }
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        navController.navigate("favorites")
+                    }) {
                         Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favorites")
                     }
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        navController.navigate("account")
+                    }) {
                         Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = "Account")
                     }
                 }

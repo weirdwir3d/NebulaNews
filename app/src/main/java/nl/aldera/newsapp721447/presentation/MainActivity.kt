@@ -61,8 +61,6 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.theme.NewsApp721447The
 
 class MainActivity : ComponentActivity() {
 
-    private val userViewModel: UserViewModel by viewModels()
-
     @SuppressLint("StateFlowValueCalledInComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,8 +100,8 @@ class MainActivity : ComponentActivity() {
                     val popupMutableState = MutableStateFlow<Boolean>(false)
 //                    val state: StateFlow<ArticleContainerState> = mutableState
 
-                    val registerState by userViewModel.registerState.collectAsState()
-                    val sessionState by userViewModel.sessionState.collectAsState()
+//                    val registerState by userViewModel.registerState.collectAsState()
+//                    val sessionState by userViewModel.sessionState.collectAsState()
                     var isPopupVisible by remember { mutableStateOf(false) }
 //                    val userViewModelSuccess = userViewModel.registerState.value
 
@@ -111,13 +109,13 @@ class MainActivity : ComponentActivity() {
 
 //                    ArticleDetailsPage()
 
-                    when (val updatedPopupState = popupMutableState.value) {
-                        true -> {
-                            Log.i("POPUP INFO", "show popup")
-                        } else -> {
-                        Log.i("POPUP INFO", "hide popup")
-                        }
-                    }
+//                    when (val updatedPopupState = popupMutableState.value) {
+//                        true -> {
+//                            Log.i("POPUP INFO", "show popup")
+//                        } else -> {
+//                        Log.i("POPUP INFO", "hide popup")
+//                        }
+//                    }
 
 //                    ArticlesPage(
 //                        onArticlesPageClick = {}

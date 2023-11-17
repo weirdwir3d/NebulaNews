@@ -1,6 +1,7 @@
 package nl.aldera.newsapp721447.presentation.viewModels
 
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,12 +12,12 @@ import nl.aldera.newsapp721447.data.model.Session
 import nl.aldera.newsapp721447.data.model.Token
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.RegisterMessage
 
-class UserViewModel : ViewModel() {
+object UserViewModel : ViewModel() {
     private val registerMutableState = MutableStateFlow<RegisterMessage>(RegisterMessage(false, ""))
     val registerState: StateFlow<RegisterMessage> = registerMutableState
 
     private val sessionMutableState = MutableStateFlow<Session>(Session(null, null))
-    val sessionState: StateFlow<Session> = sessionMutableState
+    val sessionState: StateFlow<Session> get() = sessionMutableState
 
     fun registerUser(UserName: String, Password: String) : Int {
         var codeResult : Int = -1
@@ -46,8 +47,9 @@ class UserViewModel : ViewModel() {
             val authToken: String? = response.body()?.AuthToken
 
             if (authToken != null) {
-                Log.i("INFO", "LOGIN SUCCESSFUL. Token =" + authToken.toString() + ", username =" + UserName)
+                Log.i("session", "LOGIN SUCCESSFUL. Token =" + authToken.toString() + ", username =" + UserName)
                 sessionMutableState.tryEmit(Session(UserName, authToken))
+                Log.i("INFO", sessionMutableState.value.UserName.toString())
 //                authToken?.let { Token(it) }?.let { tokenMutableState.tryEmit(it) }
                 codeResult = 3
             } else {
@@ -66,9 +68,4 @@ class UserViewModel : ViewModel() {
         }
     }
 
-//    suspend fun pushUser(UserName: String, Password: String): Result<RegisterMessage> {
-//        return runCatching { RetrofitInstance.newsApi.registerUser(UserName, Password) }
-//            .map(responseMapper::map).flatten()
-////            .map(articleContainerMapper::mapList).flatten()
-//    }
 }

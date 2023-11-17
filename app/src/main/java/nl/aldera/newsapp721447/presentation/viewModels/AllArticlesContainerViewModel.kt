@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wearetriple.exercise6.ui.page.main.component.ErrorMessage
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -44,9 +45,12 @@ class AllArticlesContainerViewModel : ViewModel() {
         viewModelScope.launch {
             mutableState.tryEmit(MainPageState.Loading)
             val articlesContainer = getArticles()
-            Log.e("DIOPORCO", articlesContainer.toString())
-//            Log.w("WARNING", articlesContainer.toString())
-            mutableState.tryEmit(MainPageState.Success(articlesContainer.getOrNull()!!))
+            try {
+                mutableState.tryEmit(MainPageState.Success(articlesContainer.getOrNull()!!))
+            } catch (e : Exception) {
+                Log.i("errorino", "cant load articles")
+            }
+
             if (articlesContainer.isSuccess) {
                 mutableState.tryEmit(MainPageState.Success(articlesContainer.getOrNull()!!))
             } else {
