@@ -2,6 +2,10 @@ package nl.aldera.newsapp721447.presentation.viewModels.ui.navigation
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -22,6 +26,7 @@ fun AppNavigation(applicationContext: Context) {
     val userViewModel : UserViewModel = viewModel()
     val favArticlesListViewModel : FavArticlesListViewModel = viewModel()
     var allFavoriteArticlesContainerViewModel : AllFavoriteArticlesContainerViewModel = viewModel()
+    var isFavouritesPage by remember { mutableStateOf(false) }
 
     NavHost(
         navController = navController,
@@ -35,7 +40,8 @@ fun AppNavigation(applicationContext: Context) {
                 navController = navController,
                 allFavoriteArticlesContainerViewModel = allFavoriteArticlesContainerViewModel,
                 favArticlesListViewModel = favArticlesListViewModel,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                isFavouritesPage = isFavouritesPage
             )
         }
         composable(

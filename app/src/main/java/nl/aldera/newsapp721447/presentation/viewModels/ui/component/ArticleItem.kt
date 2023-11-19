@@ -50,6 +50,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 fun ArticleItem(
     userViewModel: UserViewModel,
     favArticlesListViewModel: FavArticlesListViewModel,
+    isFavouritesPage : Boolean,
     item: Article,
     onClick: () -> Unit
 ) {
@@ -102,21 +103,37 @@ fun ArticleItem(
                 style = MaterialTheme.typography.bodyMedium
             )
 
-            IconButton(onClick = {
-                Log.i("INFO", "clicked on fav")
-                toggleFavorite(sessionState, item)
-            }) {
-                Icon(
-                    imageVector = if (item.Id?.let { favArticlesListViewModel.contains(it) } == true) {
-                        Icons.Filled.Favorite
-                    } else {
-                        Icons.Outlined.FavoriteBorder
-                    },
-                    contentDescription = "Favorites"
-                )
+            if (!isFavouritesPage) {
+                IconButton(onClick = {
+                    Log.i("INFO", "clicked on fav")
+                    toggleFavorite(sessionState, item)
+                }) {
+                    Icon(
+                        imageVector = if (item.Id?.let { favArticlesListViewModel.contains(it) } == true) {
+                            Icons.Filled.Favorite
+                        } else {
+                            Icons.Outlined.FavoriteBorder
+                        },
+                        contentDescription = "Favorites"
+                    )
+                }
             }
-            item.Id?.let { favArticlesListViewModel.contains(it).toString() }
-                ?.let { Log.d("does it contain favorite", it) }
+
+//            IconButton(onClick = {
+//                Log.i("INFO", "clicked on fav")
+//                toggleFavorite(sessionState, item)
+//            }) {
+//                Icon(
+//                    imageVector = if (item.Id?.let { favArticlesListViewModel.contains(it) } == true) {
+//                        Icons.Filled.Favorite
+//                    } else {
+//                        Icons.Outlined.FavoriteBorder
+//                    },
+//                    contentDescription = "Favorites"
+//                )
+//            }
+//            item.Id?.let { favArticlesListViewModel.contains(it).toString() }
+//                ?.let { Log.d("does it contain favorite", it) }
 
 
         }

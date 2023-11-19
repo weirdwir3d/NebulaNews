@@ -33,7 +33,8 @@ fun ArticleList(
     favArticlesListViewModel : FavArticlesListViewModel,
     onItemClick: (Article) -> Unit,
     userViewModel: UserViewModel,
-    isDisplaying : Boolean
+    isDisplaying : Boolean,
+    isFavouritesPage : Boolean
 ) {
 
 
@@ -57,7 +58,10 @@ fun ArticleList(
                 }
                 //            else if (article.IsLiked == true)
 
-                ArticleItem(userViewModel, favArticlesListViewModel, article) {
+                ArticleItem(userViewModel,
+                    favArticlesListViewModel,
+                    isFavouritesPage = isFavouritesPage,
+                    article) {
                     onItemClick(article)
                 }
 
