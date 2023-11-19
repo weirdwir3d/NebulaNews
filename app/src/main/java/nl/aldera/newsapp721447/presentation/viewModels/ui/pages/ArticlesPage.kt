@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import nl.aldera.newsapp721447.presentation.viewModels.AllArticlesContainerViewModel
@@ -37,6 +38,7 @@ fun ArticlesPage(
     allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel,
     favArticlesListViewModel: FavArticlesListViewModel,
     userViewModel: UserViewModel,
+    isFavouritesPage : Boolean,
     onItemClick: (Article) -> Unit
 ) {
 
@@ -69,7 +71,8 @@ fun ArticlesPage(
                     favArticlesListViewModel,
                     onItemClick = onItemClick,
                     userViewModel,
-                    isDisplaying = true
+                    isDisplaying = true,
+                    isFavouritesPage = false
                 )
 
                 is HomePageState.Error -> ErrorMessage()
@@ -84,7 +87,8 @@ fun ArticlesPage(
                         favArticlesListViewModel,
                         onItemClick = onItemClick,
                         userViewModel,
-                        isDisplaying = false
+                        isDisplaying = false,
+                        isFavouritesPage = false
                     )
 
                     is FavoritePageState.Error -> ErrorMessage()

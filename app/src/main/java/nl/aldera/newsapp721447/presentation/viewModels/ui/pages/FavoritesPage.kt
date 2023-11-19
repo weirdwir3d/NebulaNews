@@ -69,7 +69,8 @@ fun FavoritesPage(
                         favArticlesListViewModel,
                         onItemClick = onItemClick,
                         userViewModel,
-                        isDisplaying = true
+                        isDisplaying = true,
+                        isFavouritesPage = true
                     )
                     is FavoritePageState.Error -> ErrorMessage()
                 }
