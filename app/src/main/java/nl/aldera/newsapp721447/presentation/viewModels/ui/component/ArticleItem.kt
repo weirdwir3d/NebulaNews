@@ -34,6 +34,7 @@ import nl.aldera.newsapp721447.R
 import nl.aldera.newsapp721447.data.api.NewsApi
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.data.model.Session
+import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -49,7 +50,7 @@ fun ArticleItem(
 ) {
 
     val sessionState by userViewModel.sessionState.collectAsState()
-    var isFavorite by remember { mutableStateOf(false) }
+//    var isFavorite by remember { mutableStateOf(false) }
 
     Card(
         onClick = onClick,
@@ -97,18 +98,13 @@ fun ArticleItem(
             )
 
             IconButton(onClick = {
-                isFavorite = !isFavorite
                 Log.i("INFO", "clicked on fav")
                 toggleFavorite(sessionState, item)
             }) {
                 Icon(
-                    imageVector = if (isFavorite && !sessionState.AuthToken.isNullOrBlank()) {
+                    imageVector = if (item.IsLiked == true) {
                         Icons.Filled.Favorite
                     } else {
-                        Log.i(
-                            "INFO",
-                            "not logged in. isFavorite: $isFavorite" + sessionState.UserName
-                        )
                         Icons.Outlined.FavoriteBorder
                     },
                     contentDescription = "Favorites"
@@ -123,7 +119,7 @@ fun ArticleItem(
 fun toggleFavorite(session: Session, article: Article) {
     val client: OkHttpClient
 
-    if (session.AuthToken != null) {
+    if (SharedPreferencesManager.getAuthToken() != null) {
         client = OkHttpClient.Builder().addInterceptor { chain ->
             val newRequest = chain.request().newBuilder()
                 .addHeader("x-authtoken", session.AuthToken.toString())

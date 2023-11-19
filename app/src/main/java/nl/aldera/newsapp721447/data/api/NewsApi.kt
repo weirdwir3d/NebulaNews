@@ -44,7 +44,7 @@ interface NewsApi {
     ): Call<Unit>
 
     @GET("api/Articles/liked")
-    fun getLikedArticles(): Response<AllArticlesContainer>
+    suspend fun getLikedArticles(): Response<AllArticlesContainer>
 
 //    @PUT("api/Articles/{Id}/like")
 //    suspend fun likeArticle(

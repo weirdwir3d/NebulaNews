@@ -9,58 +9,81 @@ import kotlinx.coroutines.launch
 import nl.aldera.newsapp721447.data.api.NewsApi
 import nl.aldera.newsapp721447.data.mapper.ResponseMapper
 import nl.aldera.newsapp721447.data.model.AllArticlesContainer
-import nl.aldera.newsapp721447.data.model.Session
+import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.extension.flatten
-import nl.aldera.newsapp721447.presentation.viewModels.ui.model.PageState
+import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageState
+import nl.aldera.newsapp721447.presentation.viewModels.ui.model.HomePageState
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.create
 
 class AllFavoriteArticlesContainerViewModel : ViewModel() {
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://inhollandbackend.azurewebsites.net/")
-        .addConverterFactory(MoshiConverterFactory.create())
-        .build()
-    private val api = retrofit.create<NewsApi>()
+    var authToken : String? = SharedPreferencesManager.getAuthToken()
+
+//    private val retrofit = Retrofit.Builder()
+//        .baseUrl("https://inhollandbackend.azurewebsites.net/")
+//        .addConverterFactory(MoshiConverterFactory.create())
+//        .build()
+//    private val api = retrofit.create<NewsApi>()
 
     private val responseMapper = ResponseMapper()
 
-    private val mutableState = MutableStateFlow<PageState>(PageState.Loading)
-    val state: StateFlow<PageState> = mutableState
+    private val mutableState = MutableStateFlow<FavoritePageState>(FavoritePageState.Loading)
+    val state: StateFlow<FavoritePageState> = mutableState
 
-    init {
-//        setApiCall(sessionState)
-        refresh()
-    }
-
-    private fun refresh() {
+    fun refresh(authToken : String?) {
+        Log.d("errorino", "refresh method called")
         viewModelScope.launch {
-            mutableState.tryEmit(PageState.Loading)
-            val articlesContainer = getLikedArticles()
+            mutableState.tryEmit(FavoritePageState.Loading)
+            val articlesContainer = getLikedArticles(authToken)
+            Log.d("errorino", "mutable state FAV P: " + state.value.toString())
+
             try {
-                mutableState.tryEmit(PageState.Success(articlesContainer.getOrNull()!!))
+                mutableState.tryEmit(FavoritePageState.Success(articlesContainer.getOrNull()!!))
             } catch (e : Exception) {
                 Log.i("errorino", "cant load articles")
             }
 
             if (articlesContainer.isSuccess) {
-                mutableState.tryEmit(PageState.Success(articlesContainer.getOrNull()!!))
+                mutableState.tryEmit(FavoritePageState.Success(articlesContainer.getOrNull()!!))
             } else {
                 mutableState.tryEmit(
-                    PageState.Error(articlesContainer.exceptionOrNull()?.message ?: "Unknown error")
+                    FavoritePageState.Error(articlesContainer.exceptionOrNull()?.message ?: "Unknown error")
                 )
             }
         }
     }
 
-    fun setApiCall(sessionState : Session) {
+//    fun setApiCall(authToken : String?) {
+//        var client : OkHttpClient
+//        if (authToken != null) {
+//            client = OkHttpClient.Builder().addInterceptor { chain ->
+//                val newRequest = chain.request().newBuilder()
+//                    .addHeader("x-authtoken", authToken)
+//                    .build()
+//                chain.proceed(newRequest)
+//            }
+//                .build()
+//        } else {
+//            client = OkHttpClient.Builder().build()
+//        }
+//
+//        val retrofit = Retrofit.Builder()
+//            .baseUrl("https://inhollandbackend.azurewebsites.net/")
+//            .client(client)
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//        val api = retrofit.create(NewsApi::class.java)
+//        api.getLikedArticles()
+//    }
+
+
+    private suspend fun getLikedArticles(authToken : String?): Result<AllArticlesContainer> {
         var client : OkHttpClient
-        if (sessionState.AuthToken != null) {
+        if (authToken != null) {
             client = OkHttpClient.Builder().addInterceptor { chain ->
                 val newRequest = chain.request().newBuilder()
-                    .addHeader("x-authtoken", sessionState.AuthToken.toString())
+                    .addHeader("x-authtoken", authToken)
                     .build()
                 chain.proceed(newRequest)
             }
@@ -75,11 +98,7 @@ class AllFavoriteArticlesContainerViewModel : ViewModel() {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val api = retrofit.create(NewsApi::class.java)
-        api.getLikedArticles()
-    }
-
-
-    fun getLikedArticles(): Result<AllArticlesContainer> {
+//        api.getLikedArticles()
         return runCatching { api.getLikedArticles() }
             .map(responseMapper::map).flatten()
 //            .map(articleContainerMapper::mapList).flatten()
