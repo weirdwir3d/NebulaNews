@@ -5,11 +5,14 @@ import nl.aldera.newsapp721447.data.model.AllArticlesContainer
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.data.model.RegisterMessage
 import nl.aldera.newsapp721447.data.model.Token
+import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
+import retrofit2.http.HeaderMap
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface NewsApi {
@@ -34,4 +37,18 @@ interface NewsApi {
         @Field("UserName") UserName : String,
         @Field("Password") Password : String
     ): Response<Token>
+
+    @PUT("api/Articles/{Id}/like")
+    fun likeArticle(
+        @Path("Id") articleId : Int
+    ): Call<Unit>
+
+    @GET("api/Articles/liked")
+    fun getLikedArticles(): Response<AllArticlesContainer>
+
+//    @PUT("api/Articles/{Id}/like")
+//    suspend fun likeArticle(
+//        @HeaderMap headers: Map<String, String>,
+//        @Path("Id") articleId : Int
+//    ): Response<RegisterMessage>
 }

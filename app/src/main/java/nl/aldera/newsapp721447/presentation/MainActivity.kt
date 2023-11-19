@@ -45,6 +45,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import nl.aldera.newsapp721447.R
+import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
@@ -64,6 +65,7 @@ class MainActivity : ComponentActivity() {
     @SuppressLint("StateFlowValueCalledInComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        SharedPreferencesManager.init(this)
         setContent {
             NewsApp721447Theme {
 
