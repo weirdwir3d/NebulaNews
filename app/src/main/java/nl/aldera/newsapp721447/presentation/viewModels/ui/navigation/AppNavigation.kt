@@ -1,5 +1,6 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.navigation
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
@@ -15,7 +16,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticlesPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(applicationContext: Context) {
     val navController = rememberNavController()
     val userViewModel : UserViewModel = viewModel()
     var allFavoriteArticlesContainerViewModel : AllFavoriteArticlesContainerViewModel = viewModel()
@@ -56,7 +57,8 @@ fun AppNavigation() {
             FavoritesPage(
                 navController = navController,
                 userViewModel = userViewModel,
-                allFavoriteArticlesContainerViewModel
+                allFavoriteArticlesContainerViewModel,
+                applicationContext
 //                username = it.arguments?.getString("username") ?: ""
             )
         }
@@ -65,7 +67,8 @@ fun AppNavigation() {
         ) {
             AccountPage(
                 navController = navController,
-                userViewModel = userViewModel
+                userViewModel = userViewModel,
+                applicationContext
 //                username = it.arguments?.getString("username") ?: ""
             )
         }
