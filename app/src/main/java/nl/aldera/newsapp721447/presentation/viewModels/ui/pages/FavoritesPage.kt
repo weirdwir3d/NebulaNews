@@ -1,5 +1,6 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.pages
 
+import android.content.Context
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
@@ -22,18 +23,22 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
 fun FavoritesPage(
     navController : NavController,
     userViewModel: UserViewModel,
-    allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel
+    allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel,
+    context : Context
 ) {
+    val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    SharedPreferencesManager.getAuthToken()?.let { Log.d("manager", it) }
+    SharedPreferencesManager.getUserName()?.let { Log.d("manager", it) }
 
     val sessionState by userViewModel.sessionState.collectAsState()
-    val login = SharedPreferencesManager.LoginStatus()
+    val login = SharedPreferencesManager.isLoggedIn()
 
     AppScaffold(
         title = "Favorite articles",
         navController = navController
         ) {
         Column(Modifier.padding(it)) {
-            if (sessionState.AuthToken != null) {
+            if (SharedPreferencesManager.getAuthToken() != null) {
                 allFavoriteArticlesContainerViewModel.getLikedArticles()
             } else {
                 Text("Log in to see your favorite articles")

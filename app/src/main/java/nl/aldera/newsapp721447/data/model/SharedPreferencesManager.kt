@@ -5,18 +5,23 @@ import android.content.SharedPreferences
 
 object SharedPreferencesManager {
     lateinit var sharedPreferences: SharedPreferences
-//    fun init(context: Context){
-//        sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
-//    }
+    fun init(context: Context){
+        sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    }
 
-    fun getAuthToken() : String?{
+    fun getUserName() : String? {
+        val UserName = sharedPreferences.getString("UserName", null)
+        return UserName
+    }
+
+    fun getAuthToken() : String? {
         val AuthToken = sharedPreferences.getString("AuthToken", null)
         return AuthToken
     }
 
-    fun LoginStatus(): Boolean {
-        val loggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
-        return loggedIn
+    fun isLoggedIn(): Boolean {
+        val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
+        return isLoggedIn
     }
 
 }

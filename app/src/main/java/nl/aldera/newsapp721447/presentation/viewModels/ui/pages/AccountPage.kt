@@ -1,6 +1,7 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.pages
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,18 +39,19 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
 @Composable
 fun AccountPage(
     navController : NavController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    context : Context
 ) {
-
-    val isLoggedIn = SharedPreferencesManager.sharedPreferences.getBoolean("isLoggedIn", false)
+    val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
     if (isLoggedIn) {
         // display for user who is logged in
-        Log.i("INFO", "is logged in")
+        Log.i("login", "is logged in")
 //        LoggedInView(navController, context)
     } else {
         // show display for login
 //        LoginPage(navController, viewModel, context, homeViewModel)
-        Log.i("INFO", "not logged in")
+        Log.i("login", "not logged in")
     }
 
     val sessionState by userViewModel.sessionState.collectAsState()
@@ -119,6 +121,13 @@ fun AccountPage(
                             loginResultMessage = "Login successful!"
                             UserName = ""
                             Password = ""
+
+                            val preferencesEditor = sharedPreferences.edit()
+                            preferencesEditor.putBoolean("isLoggedIn", true)
+                            preferencesEditor.putString("AuthToken", sessionState.AuthToken)
+                            preferencesEditor.putString("UserName", sessionState.UserName)
+                            preferencesEditor.apply()
+
                         } else {
                             loginResultMessage = "Login failed. Username or password incorrect"
                         }
