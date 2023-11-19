@@ -95,4 +95,9 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-moshi:2.9.0")
     implementation("androidx.navigation:navigation-compose:2.7.4")
 
+    implementation("androidx.compose.runtime:runtime:1.3.0-beta01")
+    implementation("androidx.compose.foundation:foundation:1.3.0-beta01")
+    implementation("androidx.compose.ui:ui:1.3.0-beta01")
+    implementation("androidx.compose.material:material:1.3.0-beta01")
+
 }

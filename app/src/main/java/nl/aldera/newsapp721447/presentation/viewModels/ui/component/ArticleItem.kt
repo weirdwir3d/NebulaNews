@@ -18,6 +18,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -30,8 +31,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import nl.aldera.newsapp721447.R
 import nl.aldera.newsapp721447.data.api.NewsApi
 import nl.aldera.newsapp721447.data.model.Article
@@ -42,6 +46,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoriteListState
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 
 
@@ -50,13 +55,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 fun ArticleItem(
     userViewModel: UserViewModel,
     favArticlesListViewModel: FavArticlesListViewModel,
-    isFavouritesPage : Boolean,
+    isFavouritesPage: Boolean,
     item: Article,
     onClick: () -> Unit
 ) {
 
+    var authToken = SharedPreferencesManager.getAuthToken()
     val sessionState by userViewModel.sessionState.collectAsState()
-//    var isFavorite by remember { mutableStateOf(false) }
 
     Card(
         onClick = onClick,
@@ -105,8 +110,11 @@ fun ArticleItem(
 
             if (!isFavouritesPage) {
                 IconButton(onClick = {
-                    Log.i("INFO", "clicked on fav")
-                    toggleFavorite(sessionState, item)
+                    if (authToken != null) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            toggleFavorite(authToken, item, favArticlesListViewModel)
+                        }
+                    }
                 }) {
                     Icon(
                         imageVector = if (item.Id?.let { favArticlesListViewModel.contains(it) } == true) {
@@ -119,34 +127,26 @@ fun ArticleItem(
                 }
             }
 
-//            IconButton(onClick = {
-//                Log.i("INFO", "clicked on fav")
-//                toggleFavorite(sessionState, item)
-//            }) {
-//                Icon(
-//                    imageVector = if (item.Id?.let { favArticlesListViewModel.contains(it) } == true) {
-//                        Icons.Filled.Favorite
-//                    } else {
-//                        Icons.Outlined.FavoriteBorder
-//                    },
-//                    contentDescription = "Favorites"
-//                )
-//            }
-//            item.Id?.let { favArticlesListViewModel.contains(it).toString() }
-//                ?.let { Log.d("does it contain favorite", it) }
-
-
         }
     }
 }
 
-fun toggleFavorite(session: Session, article: Article) {
+suspend fun toggleFavorite(
+    authToken: String,
+    article: Article,
+    favArticlesListViewModel: FavArticlesListViewModel,
+) {
+    var Id: Int = -1
+    if (article.Id != null) {
+        Id = article.Id
+    }
+    Log.d("debug", "toggling fav")
     val client: OkHttpClient
 
     if (SharedPreferencesManager.getAuthToken() != null) {
         client = OkHttpClient.Builder().addInterceptor { chain ->
             val newRequest = chain.request().newBuilder()
-                .addHeader("x-authtoken", session.AuthToken.toString())
+                .addHeader("x-authtoken", authToken)
                 .build()
             chain.proceed(newRequest)
         }
@@ -163,17 +163,26 @@ fun toggleFavorite(session: Session, article: Article) {
     val api = retrofit.create(NewsApi::class.java)
 
 
-    Log.d("favorites", "token: " + session.AuthToken)
-    Log.d("favorites", "IsLiked: " + article.IsLiked)
-    if (article.IsLiked == true) {
-        Log.d("favorites", "disliked article")
-    } else {
-        Log.d("favorites", "liked article")
-        article.Id?.let {
-            api.likeArticle(article.Id)
-            Log.d("favorites","IsLiked: " + article.IsLiked)
-        }
 
+    if (favArticlesListViewModel.contains(Id)) {
+        Log.d("debug", "disliked")
+
+    } else {
+        var responseFlow = api.likeArticle(Id)
+        val responseStatusCode = responseFlow.awaitResponse().code()
+
+//        val statusCode = responseState.value.statusCode
+
+//        if (statusCode == 200) {
+//            // Handle successful response
+//        } else {
+//            // Handle error response
+//        }
+//        var call = api.likeArticle(Id)
+//        favArticlesListViewModel.addFavArticle(Id)
+        Log.d("debug", "liked")
+        Log.d("debug", "response status code: " + responseStatusCode)
+        Log.d("debug", favArticlesListViewModel.fetchFavoriteArticles().toString())
     }
 }
 
@@ -218,9 +227,3 @@ fun toggleFavorite(session: Session, article: Article) {
 //        }
 //    }
 //}
-
-private fun getHeaderMap(authToken: String): Map<String, String> {
-    val headerMap = mutableMapOf<String, String>()
-    headerMap["x-authtoken"] = authToken
-    return headerMap
-}
