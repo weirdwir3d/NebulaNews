@@ -58,7 +58,8 @@ fun AppNavigation(applicationContext: Context) {
                 navController = navController,
                 userViewModel = userViewModel,
                 allFavoriteArticlesContainerViewModel,
-                applicationContext
+                applicationContext,
+                onItemClick = {}
 //                username = it.arguments?.getString("username") ?: ""
             )
         }
