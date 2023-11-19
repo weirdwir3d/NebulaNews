@@ -26,6 +26,7 @@ import kotlinx.coroutines.launch
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.presentation.viewModels.AllFavoriteArticlesContainerViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageState
@@ -38,6 +39,7 @@ fun FavoritesPage(
     navController : NavController,
     userViewModel: UserViewModel,
     allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel,
+    favArticlesListViewModel: FavArticlesListViewModel,
     context : Context,
     onItemClick: (Article) -> Unit
 ) {
@@ -64,10 +66,11 @@ fun FavoritesPage(
                     is FavoritePageState.Loading -> LoadingIndicator()
                     is FavoritePageState.Success -> ArticleList(
                         allArticlesContainer = favArticlesState.allArticlesContainer,
+                        favArticlesListViewModel,
                         onItemClick = onItemClick,
-                        userViewModel
+                        userViewModel,
+                        isDisplaying = true
                     )
-
                     is FavoritePageState.Error -> ErrorMessage()
                 }
 

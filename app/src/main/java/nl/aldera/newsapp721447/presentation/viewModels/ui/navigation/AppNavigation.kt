@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import nl.aldera.newsapp721447.presentation.viewModels.AllFavoriteArticlesContainerViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.AccountPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticleDetailsPage
@@ -19,6 +20,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
 fun AppNavigation(applicationContext: Context) {
     val navController = rememberNavController()
     val userViewModel : UserViewModel = viewModel()
+    val favArticlesListViewModel : FavArticlesListViewModel = viewModel()
     var allFavoriteArticlesContainerViewModel : AllFavoriteArticlesContainerViewModel = viewModel()
 
     NavHost(
@@ -31,6 +33,8 @@ fun AppNavigation(applicationContext: Context) {
                     navController.navigate("articles/${it.Id}")
                 },
                 navController = navController,
+                allFavoriteArticlesContainerViewModel = allFavoriteArticlesContainerViewModel,
+                favArticlesListViewModel = favArticlesListViewModel,
                 userViewModel = userViewModel
             )
         }
@@ -58,6 +62,7 @@ fun AppNavigation(applicationContext: Context) {
                 navController = navController,
                 userViewModel = userViewModel,
                 allFavoriteArticlesContainerViewModel,
+                favArticlesListViewModel,
                 applicationContext,
                 onItemClick = {}
 //                username = it.arguments?.getString("username") ?: ""

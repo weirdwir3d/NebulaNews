@@ -30,12 +30,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import nl.aldera.newsapp721447.R
 import nl.aldera.newsapp721447.data.api.NewsApi
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.data.model.Session
 import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
+import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoriteListState
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -45,6 +49,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 @Composable
 fun ArticleItem(
     userViewModel: UserViewModel,
+    favArticlesListViewModel: FavArticlesListViewModel,
     item: Article,
     onClick: () -> Unit
 ) {
@@ -102,7 +107,7 @@ fun ArticleItem(
                 toggleFavorite(sessionState, item)
             }) {
                 Icon(
-                    imageVector = if (item.IsLiked == true) {
+                    imageVector = if (item.Id?.let { favArticlesListViewModel.contains(it) } == true) {
                         Icons.Filled.Favorite
                     } else {
                         Icons.Outlined.FavoriteBorder
@@ -110,6 +115,8 @@ fun ArticleItem(
                     contentDescription = "Favorites"
                 )
             }
+            item.Id?.let { favArticlesListViewModel.contains(it).toString() }
+                ?.let { Log.d("does it contain favorite", it) }
 
 
         }
