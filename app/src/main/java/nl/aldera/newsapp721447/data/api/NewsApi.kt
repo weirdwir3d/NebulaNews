@@ -39,7 +39,7 @@ interface NewsApi {
     ): Response<Token>
 
     @PUT("api/Articles/{Id}/like")
-    fun likeArticle(
+    public abstract fun likeArticle(
         @Path("Id") articleId : Int
     ): Call<Unit>
 
