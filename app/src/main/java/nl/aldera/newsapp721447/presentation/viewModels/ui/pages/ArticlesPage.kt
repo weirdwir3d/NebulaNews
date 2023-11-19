@@ -16,17 +16,19 @@ import com.wearetriple.exercise6.ui.page.main.component.ErrorMessage
 import com.wearetriple.exercise6.ui.page.main.component.LoadingIndicator
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
-import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
+import nl.aldera.newsapp721447.presentation.viewModels.ui.model.PageState
 
 @SuppressLint("ServiceCast")
 @Composable
 fun ArticlesPage(
     navController : NavController,
     articlesViewModel: AllArticlesContainerViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    userViewModel: UserViewModel,
     onItemClick: (Article) -> Unit
 ) {
 
     val articlesState by articlesViewModel.state.collectAsState()
+    val sessionState by userViewModel.sessionState.collectAsState()
 
     LaunchedEffect(Unit) {
         articlesViewModel.getArticles()
@@ -38,16 +40,22 @@ fun ArticlesPage(
     ) {
         Column(Modifier.padding(it)) {
 
+            if (sessionState.AuthToken != null) {
+                //
+            } else {
+                when (val articlesState = articlesState) {
+                    is PageState.Loading -> LoadingIndicator()
+                    is PageState.Success -> ArticleList(
+                        allArticlesContainer = articlesState.allArticlesContainer,
+                        onItemClick = onItemClick,
+                        userViewModel
+                    )
 
-            when (val articlesState = articlesState) {
-                is MainPageState.Loading -> LoadingIndicator()
-                is MainPageState.Success -> ArticleList(
-                    allArticlesContainer = articlesState.allArticlesContainer,
-                    onItemClick = onItemClick
-                )
-
-                is MainPageState.Error -> ErrorMessage()
+                    is PageState.Error -> ErrorMessage()
+                }
             }
+
+
 
         }
     }

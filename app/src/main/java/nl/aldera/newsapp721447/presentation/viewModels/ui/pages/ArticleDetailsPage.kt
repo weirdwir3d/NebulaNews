@@ -8,18 +8,13 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import com.wearetriple.exercise6.ui.page.main.component.ArticleItem
-import com.wearetriple.exercise6.ui.page.main.component.ArticleList
 import com.wearetriple.exercise6.ui.page.main.component.ErrorMessage
 import com.wearetriple.exercise6.ui.page.main.component.LoadingIndicator
 import nl.aldera.newsapp721447.presentation.viewModels.ArticleViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
-import nl.aldera.newsapp721447.presentation.viewModels.ui.component.ArticleDetails
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.ArticleDetailsBox
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.NavigationType
-import nl.aldera.newsapp721447.presentation.viewModels.ui.model.ArticleContainerState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.DetailState
-import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
 
 @Composable
 fun ArticleDetailsPage(

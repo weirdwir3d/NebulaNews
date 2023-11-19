@@ -1,17 +1,12 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.pages
 
-import android.text.Layout
+import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -34,20 +29,28 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.wearetriple.exercise6.ui.page.main.component.ArticleList
-import com.wearetriple.exercise6.ui.page.main.component.ErrorMessage
-import com.wearetriple.exercise6.ui.page.main.component.LoadingIndicator
-import kotlinx.coroutines.delay
+import androidx.navigation.NavHostController
+import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
-import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountPage(
     navController : NavController,
-    userViewModel: UserViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
-    ) {
+    userViewModel: UserViewModel
+) {
+
+    val isLoggedIn = SharedPreferencesManager.sharedPreferences.getBoolean("isLoggedIn", false)
+    if (isLoggedIn) {
+        // display for user who is logged in
+        Log.i("INFO", "is logged in")
+//        LoggedInView(navController, context)
+    } else {
+        // show display for login
+//        LoginPage(navController, viewModel, context, homeViewModel)
+        Log.i("INFO", "not logged in")
+    }
 
     val sessionState by userViewModel.sessionState.collectAsState()
     val registerState by userViewModel.registerState.collectAsState()
@@ -164,6 +167,43 @@ fun AccountPage(
         }
     }
 
+}
+
+@Composable
+fun LoggedInView(navController: NavHostController, context: Context) {
+    val sharedPref = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+    val isLoggedIn = sharedPref.getBoolean("isLoggedIn", false)
+    val username = sharedPref.getString("UserName", "DefaultUsername")
+    if (isLoggedIn) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // show username
+            Text(text = "hello")
+            Text(text = username.toString())
+            Spacer(modifier = Modifier.height(16.dp))
+            // Logout-Button
+            Button(
+                onClick = {
+//                    val editor = sharedPref.edit()
+//                    editor.putBoolean("isLoggedIn", false)
+//                    editor.apply()
+//                    // delete username and authToken
+//                    UserData.username = ""
+//                    clearAuth(context)
+//                    navController.navigate(Screens.Login.route)
+                }
+            ) {
+                Text(text = "Logout")
+            }
+        }
+    } else {
+        // If user is not logged in:
+        Text(text = "Not logged in",
+            modifier = Modifier.padding(16.dp))
+    }
 }
 
 @Composable

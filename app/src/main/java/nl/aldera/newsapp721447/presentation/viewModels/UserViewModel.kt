@@ -12,7 +12,7 @@ import nl.aldera.newsapp721447.data.model.Session
 import nl.aldera.newsapp721447.data.model.Token
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.RegisterMessage
 
-object UserViewModel : ViewModel() {
+class UserViewModel : ViewModel() {
     private val registerMutableState = MutableStateFlow<RegisterMessage>(RegisterMessage(false, ""))
     val registerState: StateFlow<RegisterMessage> = registerMutableState
 
@@ -27,15 +27,15 @@ object UserViewModel : ViewModel() {
             val message = response.body()?.Message
 
             if (isSuccessful == true) {
-                Log.i("INFO", "registration SUCCESSFUL")
+                Log.d("Registration", "registration SUCCESSFUL")
                 registerMutableState.tryEmit(RegisterMessage(true, "User registered"))
                 codeResult = 1
             } else {
-                Log.e("INFO", "error while registering registration")
+                Log.e("Registration", "error while registering registration")
                 registerMutableState.tryEmit(RegisterMessage(false, "UserName already exists"))
                 codeResult = 2
             }
-            Log.e("INFO", "registration state from userViewModel: " + registerState.value.toString())
+            Log.d("Registration", "registration state from userViewModel: " + registerState.value.toString())
         }
         return codeResult
     }
@@ -47,7 +47,7 @@ object UserViewModel : ViewModel() {
             val authToken: String? = response.body()?.AuthToken
 
             if (authToken != null) {
-                Log.i("session", "LOGIN SUCCESSFUL. Token =" + authToken.toString() + ", username =" + UserName)
+                Log.d("session", "LOGIN SUCCESSFUL. Token =" + authToken.toString() + ", username =" + UserName)
                 sessionMutableState.tryEmit(Session(UserName, authToken))
                 Log.i("INFO", sessionMutableState.value.UserName.toString())
 //                authToken?.let { Token(it) }?.let { tokenMutableState.tryEmit(it) }

@@ -1,6 +1,5 @@
 package nl.aldera.newsapp721447.presentation.viewModels
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,13 +11,9 @@ import kotlinx.coroutines.launch
 import nl.aldera.newsapp721447.data.api.NewsApi
 import nl.aldera.newsapp721447.data.mapper.ResponseMapper
 import nl.aldera.newsapp721447.data.mapper.SingleArticleMapper
-import nl.aldera.newsapp721447.data.model.AllArticlesContainer
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.extension.flatten
-import nl.aldera.newsapp721447.presentation.viewModels.ui.model.ArticleContainerState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.DetailState
-import nl.aldera.newsapp721447.presentation.viewModels.ui.model.MainPageState
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
