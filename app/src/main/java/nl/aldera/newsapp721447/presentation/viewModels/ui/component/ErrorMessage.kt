@@ -13,6 +13,6 @@ fun ErrorMessage() {
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text("Something went wrong")
+        Text("Couldn't fetch articles")
     }
 }

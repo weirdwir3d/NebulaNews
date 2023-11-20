@@ -7,6 +7,7 @@ import nl.aldera.newsapp721447.data.model.RegisterMessage
 import nl.aldera.newsapp721447.data.model.Token
 import retrofit2.Call
 import retrofit2.Response
+import retrofit2.http.DELETE
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -39,16 +40,15 @@ interface NewsApi {
     ): Response<Token>
 
     @PUT("api/Articles/{Id}/like")
-    public abstract fun likeArticle(
+    fun likeArticle(
+        @Path("Id") articleId : Int
+    ): Call<Unit>
+
+    @DELETE("api/Articles/{Id}/like")
+    fun dislikeArticle(
         @Path("Id") articleId : Int
     ): Call<Unit>
 
     @GET("api/Articles/liked")
     suspend fun getLikedArticles(): Response<AllArticlesContainer>
-
-//    @PUT("api/Articles/{Id}/like")
-//    suspend fun likeArticle(
-//        @HeaderMap headers: Map<String, String>,
-//        @Path("Id") articleId : Int
-//    ): Response<RegisterMessage>
 }
