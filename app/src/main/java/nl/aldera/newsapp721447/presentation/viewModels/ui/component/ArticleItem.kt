@@ -2,6 +2,7 @@
 
 package com.wearetriple.exercise6.ui.page.main.component
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -50,6 +51,7 @@ import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
 
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticleItem(
@@ -59,7 +61,6 @@ fun ArticleItem(
     item: Article,
     onClick: () -> Unit
 ) {
-
     var authToken = SharedPreferencesManager.getAuthToken()
     val sessionState by userViewModel.sessionState.collectAsState()
 
@@ -117,10 +118,15 @@ fun ArticleItem(
                     }
                 }) {
                     Icon(
-                        imageVector = if (item.Id?.let { favArticlesListViewModel.contains(it) } == true) {
-                            Icons.Filled.Favorite
-                        } else {
-                            Icons.Outlined.FavoriteBorder
+                        imageVector = when {
+                            favArticlesListViewModel.favArticlesList.value.contains(item.Id) -> {
+                                // Use the filled favorite icon
+                                Icons.Filled.Favorite
+                            }
+                            else -> {
+                                // Use the outlined favorite border icon
+                                Icons.Outlined.FavoriteBorder
+                            }
                         },
                         contentDescription = "Favorites"
                     )
@@ -166,6 +172,11 @@ suspend fun toggleFavorite(
 
     if (favArticlesListViewModel.contains(Id)) {
         Log.d("debug", "disliked")
+//        api.dislikeArticle(Id)
+        var responseFlow = api.dislikeArticle(Id)
+        val responseStatusCode = responseFlow.awaitResponse().code()
+        Log.d("debug delete", "DELETE response status code: " + responseStatusCode)
+        favArticlesListViewModel.removeFavArticle(Id)
 
     } else {
         var responseFlow = api.likeArticle(Id)
