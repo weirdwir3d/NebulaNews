@@ -4,15 +4,20 @@ package com.wearetriple.exercise6.ui.page.main.component
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,8 +35,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.compose.rememberAsyncImagePainter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,6 +53,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoriteListState
 import okhttp3.OkHttpClient
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
@@ -61,35 +69,50 @@ fun ArticleItem(
     item: Article,
     onClick: () -> Unit
 ) {
+    var isFavorite by remember { mutableStateOf(item.IsLiked) }
     var authToken = SharedPreferencesManager.getAuthToken()
     val sessionState by userViewModel.sessionState.collectAsState()
 
     Card(
         onClick = onClick,
         modifier = Modifier
+//            .background(MaterialTheme.colorScheme.tertiary)
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(8.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.tertiary
+        )
+//            .background(MaterialTheme.colorScheme.tertiary)
     ) {
-        Column {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxSize(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AsyncImage(
+                Box(
                     modifier = Modifier
-                        .size(80.dp)
-                        .padding(8.dp),
-                    placeholder = painterResource(R.drawable.placeholder),
-                    model = item.Image,
-                    contentDescription = stringResource(R.string.article_image_description),
-                    contentScale = ContentScale.Fit
-                )
+                        .size(100.dp)
+                ) {
+                    AsyncImage(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        placeholder = painterResource(R.drawable.placeholder),
+                        model = item.Image,
+                        contentDescription = stringResource(R.string.article_image_description),
+                        contentScale = ContentScale.Crop
+                    )
+                }
 
-                Column(Modifier.padding(end = 8.dp)) {
+
+
                     item.Title?.let {
                         Text(
                             text = it,
-                            style = MaterialTheme.typography.headlineSmall
+                            style = MaterialTheme.typography.titleMedium,
+                            color = MaterialTheme.colorScheme.secondary,
+                            maxLines = 3,
+                            overflow = TextOverflow.Clip
                         )
                     }
 //                    Text(
@@ -100,40 +123,48 @@ fun ArticleItem(
 //                        style = MaterialTheme.typography.bodyMedium,
 //                        fontStyle = FontStyle.Italic
 //                    )
-                }
-            }
 
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = item.Summary ?: "",
-                style = MaterialTheme.typography.bodyMedium
-            )
 
-            if (!isFavouritesPage) {
-                IconButton(onClick = {
-                    if (authToken != null) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            toggleFavorite(authToken, item, favArticlesListViewModel)
+                if (!isFavouritesPage && SharedPreferencesManager.isLoggedIn()) {
+                    IconButton(onClick = {
+                        if (authToken != null) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                toggleFavorite(authToken, item, favArticlesListViewModel) { success ->
+                                if (success) {
+                                    // Change State from isFavorite
+                                    isFavorite = item.IsLiked
+
+//                                    if (!isFavorite) {
+//                                        viewModel.removeLikedArticle(article)
+//                                    }
+                                } else {
+                                    Log.d("fav debug", "error trying to like/dislike")
+                                }
+
+
+                                }
+                            }
                         }
+                    }) {
+                        Icon(
+                            imageVector = when {
+                                favArticlesListViewModel.favArticlesList.value.contains(item.Id) -> {
+                                    // Use the filled favorite icon
+                                    Icons.Filled.Favorite
+                                }
+                                else -> {
+                                    // Use the outlined favorite border icon
+                                    Icons.Outlined.FavoriteBorder
+                                }
+                            },
+                            contentDescription = stringResource(R.string.favorite_icon)
+                        )
                     }
-                }) {
-                    Icon(
-                        imageVector = when {
-                            favArticlesListViewModel.favArticlesList.value.contains(item.Id) -> {
-                                // Use the filled favorite icon
-                                Icons.Filled.Favorite
-                            }
-                            else -> {
-                                // Use the outlined favorite border icon
-                                Icons.Outlined.FavoriteBorder
-                            }
-                        },
-                        contentDescription = "Favorites"
-                    )
                 }
+
             }
 
-        }
+
     }
 }
 
@@ -141,6 +172,7 @@ suspend fun toggleFavorite(
     authToken: String,
     article: Article,
     favArticlesListViewModel: FavArticlesListViewModel,
+    callback: (Boolean) -> Unit
 ) {
     var Id: Int = -1
     if (article.Id != null) {
@@ -168,33 +200,27 @@ suspend fun toggleFavorite(
         .build()
     val api = retrofit.create(NewsApi::class.java)
 
-
+    var responseFlow : Call<Unit>
 
     if (favArticlesListViewModel.contains(Id)) {
         Log.d("debug", "disliked")
 //        api.dislikeArticle(Id)
-        var responseFlow = api.dislikeArticle(Id)
+        responseFlow = api.dislikeArticle(Id)
         val responseStatusCode = responseFlow.awaitResponse().code()
         Log.d("debug delete", "DELETE response status code: " + responseStatusCode)
         favArticlesListViewModel.removeFavArticle(Id)
-
     } else {
-        var responseFlow = api.likeArticle(Id)
+        responseFlow = api.likeArticle(Id)
         val responseStatusCode = responseFlow.awaitResponse().code()
-
-//        val statusCode = responseState.value.statusCode
-
-//        if (statusCode == 200) {
-//            // Handle successful response
-//        } else {
-//            // Handle error response
-//        }
-//        var call = api.likeArticle(Id)
-//        favArticlesListViewModel.addFavArticle(Id)
         Log.d("debug", "liked")
         Log.d("debug", "response status code: " + responseStatusCode)
         Log.d("debug", favArticlesListViewModel.fetchFavoriteArticles().toString())
     }
+
+    if (responseFlow.awaitResponse().code() == 200) {
+        return callback(true)
+    }
+    return callback(false)
 }
 
 

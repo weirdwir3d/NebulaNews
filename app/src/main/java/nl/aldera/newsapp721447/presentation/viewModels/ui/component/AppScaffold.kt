@@ -65,29 +65,22 @@ fun AppScaffold(
                     IconButton(onClick = {
                         navController.navigate("articles")
                     }) {
-                        Icon(imageVector = Icons.Outlined.Home, contentDescription = "Home")
+                        Icon(imageVector = Icons.Outlined.Home, contentDescription = stringResource(R.string.homepage_title))
                     }
                     IconButton(onClick = {
                         navController.navigate("favorites")
                     }) {
-                        Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = "Favorites")
+                        Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = stringResource(R.string.favourites_page_title))
                     }
                     IconButton(onClick = {
                         navController.navigate("account")
                     }) {
-                        Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = "Account")
+                        Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = stringResource(R.string.account_page_title))
                     }
                 }
             )
         }
     )
-}
-
-@Composable
-fun showPopup() {
-    Box {
-        Text("hello")
-    }
 }
 
 //@Composable
@@ -128,7 +121,7 @@ fun AppScaffoldBottomBar(
         actions = actions,
 
         containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = Color.White
+        contentColor = MaterialTheme.colorScheme.secondary
     )
 }
 
@@ -151,10 +144,10 @@ fun AppScaffoldTopBar(
         actions = actions,
         colors = TopAppBarDefaults.smallTopAppBarColors(
             containerColor = MaterialTheme.colorScheme.primary,
-            scrolledContainerColor = MaterialTheme.colorScheme.primary,
-            titleContentColor = MaterialTheme.colorScheme.onPrimary,
-            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
-            actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+            scrolledContainerColor = MaterialTheme.colorScheme.secondary,
+            titleContentColor = MaterialTheme.colorScheme.secondary,
+            navigationIconContentColor = MaterialTheme.colorScheme.secondary,
+            actionIconContentColor = MaterialTheme.colorScheme.secondary
         ),
         navigationIcon = {
             AppScaffoldTopBarNavigation(navigation)

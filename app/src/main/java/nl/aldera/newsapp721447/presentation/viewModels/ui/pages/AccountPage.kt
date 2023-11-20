@@ -128,6 +128,8 @@ fun AccountPage(
                             preferencesEditor.putString("UserName", sessionState.UserName)
                             preferencesEditor.apply()
 
+                            //TODO: perform background api call to fetch fav articles
+
                         } else {
                             loginResultMessage = "Login failed. Username or password incorrect"
                         }
