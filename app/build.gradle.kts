@@ -99,5 +99,8 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.3.0-beta01")
     implementation("androidx.compose.ui:ui:1.3.0-beta01")
     implementation("androidx.compose.material:material:1.3.0-beta01")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx")
+    implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
+
 
 }

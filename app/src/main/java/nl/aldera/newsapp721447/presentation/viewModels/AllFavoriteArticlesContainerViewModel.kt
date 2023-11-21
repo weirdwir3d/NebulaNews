@@ -12,7 +12,6 @@ import nl.aldera.newsapp721447.data.model.AllArticlesContainer
 import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.extension.flatten
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageState
-import nl.aldera.newsapp721447.presentation.viewModels.ui.model.HomePageState
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -31,7 +30,7 @@ class AllFavoriteArticlesContainerViewModel : ViewModel() {
     private val mutableState = MutableStateFlow<FavoritePageState>(FavoritePageState.Loading)
     val state: StateFlow<FavoritePageState> = mutableState
 
-    fun refresh(authToken : String?) {
+    fun fetchLikedArticles(authToken : String?) {
         Log.d("errorino", "refresh method called")
         viewModelScope.launch {
             mutableState.tryEmit(FavoritePageState.Loading)
@@ -52,6 +51,10 @@ class AllFavoriteArticlesContainerViewModel : ViewModel() {
                 )
             }
         }
+    }
+
+    suspend fun fetchAllArticlesContainer(authToken: String?) : Result<AllArticlesContainer>? {
+            return getLikedArticles(authToken)
     }
 
 //    fun setApiCall(authToken : String?) {

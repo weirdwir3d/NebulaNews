@@ -11,15 +11,20 @@ class FavArticlesListViewModel : ViewModel() {
     private val mutableFavArticlesList = MutableStateFlow<List<Int>>(emptyList())
     val favArticlesList: StateFlow<List<Int>> = mutableFavArticlesList
 
-//    private val mutableOpenedEntry = MutableStateFlow<Todo?>(null)
-//    val openedEntry: StateFlow<Todo?> = mutableOpenedEntry
+    fun getSize() : Int {
+        return _favArticlesList.size
+    }
 
     fun contains(articleId : Int) : Boolean {
         return _favArticlesList.contains(articleId)
     }
-    fun addFavArticle(articleId : Int) {
-        _favArticlesList.add(articleId)
-        mutableFavArticlesList.tryEmit(_favArticlesList.toList())
+    fun addFavArticle(articleId : Int) : Boolean {
+        if (!_favArticlesList.contains(articleId)) {
+            _favArticlesList.add(articleId)
+            mutableFavArticlesList.tryEmit(_favArticlesList.toList())
+            return true
+        }
+        return false
     }
 
     fun removeFavArticle(articleId : Int) {
@@ -33,9 +38,7 @@ class FavArticlesListViewModel : ViewModel() {
         return _favArticlesList.toList()// Replace with actual fetched data
     }
 
-//    fun onEntryClicked(model: Todo) {
-//        mutableOpenedEntry.tryEmit(
-//            if (openedEntry.value == model) null else model
-//        )
-//    }
+    fun clearList() {
+        mutableFavArticlesList.value = emptyList()
+    }
 }
