@@ -8,11 +8,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -54,6 +56,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoriteListState
 import okhttp3.OkHttpClient
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
@@ -78,7 +81,7 @@ fun ArticleItem(
         modifier = Modifier
 //            .background(MaterialTheme.colorScheme.tertiary)
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(4.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.tertiary
         )
@@ -104,28 +107,34 @@ fun ArticleItem(
                     )
                 }
 
-
-
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(245.dp)
+                ){
                     item.Title?.let {
                         Text(
                             text = it,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.secondary,
                             maxLines = 3,
                             overflow = TextOverflow.Clip
                         )
                     }
-//                    Text(
-//                        text = stringResource(
-//                            R.string.exercise6_price,
-//                            DecimalFormat("##.00").format(item.price)
-//                        ),
-//                        style = MaterialTheme.typography.bodyMedium,
-//                        fontStyle = FontStyle.Italic
+                }
+
+
+
+//                IconButton(onClick = {
+//                    //todo
+//                }) {
+//                    Icon(imageVector = Icons.Filled.Favorite,
+//                        contentDescription = stringResource(R.string.favorite_icon)
 //                    )
+//                }
 
 
-                if (!isFavouritesPage && SharedPreferencesManager.isLoggedIn()) {
+                if (!isFavouritesPage && SharedPreferencesManager.getAuthToken() != null) {
                     IconButton(onClick = {
                         if (authToken != null) {
                             CoroutineScope(Dispatchers.IO).launch {
@@ -200,28 +209,29 @@ suspend fun toggleFavorite(
         .build()
     val api = retrofit.create(NewsApi::class.java)
 
-    var responseFlow : Call<Unit>
+    var response: Response<Unit>? = null
 
     if (favArticlesListViewModel.contains(Id)) {
         Log.d("debug", "disliked")
-//        api.dislikeArticle(Id)
-        responseFlow = api.dislikeArticle(Id)
-        val responseStatusCode = responseFlow.awaitResponse().code()
-        Log.d("debug delete", "DELETE response status code: " + responseStatusCode)
+        response = api.dislikeArticle(Id).awaitResponse()
+        val responseStatusCode = response.code()
+        Log.d("debug delete", "DELETE response status code: $responseStatusCode")
         favArticlesListViewModel.removeFavArticle(Id)
     } else {
-        responseFlow = api.likeArticle(Id)
-        val responseStatusCode = responseFlow.awaitResponse().code()
+        response = api.likeArticle(Id).awaitResponse()
+        val responseStatusCode = response.code()
         Log.d("debug", "liked")
-        Log.d("debug", "response status code: " + responseStatusCode)
+        Log.d("debug", "response status code: $responseStatusCode")
         Log.d("debug", favArticlesListViewModel.fetchFavoriteArticles().toString())
     }
 
-    if (responseFlow.awaitResponse().code() == 200) {
-        return callback(true)
+    if (response?.code() == 200) {
+        callback(true)
+    } else {
+        callback(false)
     }
-    return callback(false)
 }
+
 
 
 //@Composable

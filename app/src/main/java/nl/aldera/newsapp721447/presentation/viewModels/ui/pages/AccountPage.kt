@@ -1,5 +1,6 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.pages
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
@@ -31,17 +32,28 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import com.wearetriple.exercise6.ui.page.main.component.ArticleList
+import nl.aldera.newsapp721447.data.model.AllArticlesContainer
+import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
+import nl.aldera.newsapp721447.presentation.viewModels.AllFavoriteArticlesContainerViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
+import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageState
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AccountPage(
     navController : NavController,
     userViewModel: UserViewModel,
+    allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel,
+    favArticlesListViewModel : FavArticlesListViewModel,
     context : Context
 ) {
+
+    val favArticlesState by allFavoriteArticlesContainerViewModel.state.collectAsState()
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     val isLoggedIn = sharedPreferences.getBoolean("isLoggedIn", false)
     if (isLoggedIn) {
@@ -116,7 +128,6 @@ fun AccountPage(
                     Text(registerResultMessage)
 
                     LaunchedEffect(sessionState) {
-                        Log.e("INFO", "launched")
                         if (!sessionState.AuthToken.isNullOrBlank()) {
                             loginResultMessage = "Login successful!"
                             UserName = ""
@@ -128,9 +139,27 @@ fun AccountPage(
                             preferencesEditor.putString("UserName", sessionState.UserName)
                             preferencesEditor.apply()
 
-                            //TODO: perform background api call to fetch fav articles
+                            // fetch list containing ids of user's fav articles and update favArticlesListViewmodel,
+                            // so that the list can be accessible across the whole project
+//                            var result = allFavoriteArticlesContainerViewModel.fetchAllArticlesContainer(SharedPreferencesManager.getAuthToken())
+//                            var articles : List<Article>? = result?.getOrNull()?.Results
+//                            if (articles != null) {
+//                                for (article in articles) {
+//                                    article.Id?.let { id ->
+//                                        favArticlesListViewModel.addFavArticle(
+//                                            id
+//                                        )
+//                                    }
+//                                }
+//                            }
+//                            Log.d("dioporco", articles.toString())
+//                            Log.d("dioporco", favArticlesListViewModel.favArticlesList.value.toString())
+//                            Log.d("favorite articles", "login successful. isLoggedIn: " + SharedPreferencesManager.isLoggedIn() + "token: " + SharedPreferencesManager.getAuthToken())
+                            //            if (SharedPreferencesManager.getAuthToken() != null) {
 
-                        } else {
+            }
+
+                         else {
                             loginResultMessage = "Login failed. Username or password incorrect"
                         }
                     }
@@ -169,8 +198,18 @@ fun AccountPage(
                             .clickable {
                                 sessionState.AuthToken = null
                                 sessionState.UserName = null
-                                Log.i("INFO", "üser logged out")
+                                Log.i("favorite article", "üser logged out")
+
+                                val editor = sharedPreferences.edit()
+                                editor.putBoolean("isLoggedIn", false)
+                                editor.remove("AuthToken")
+                                editor.remove("UserName")
+                                editor.apply()
+                                favArticlesListViewModel.clearList()
+                                Log.d("favorite articles empty list", favArticlesListViewModel.favArticlesList.value.toString())
+                                Log.d("favorite articles empty list", "token: " + SharedPreferencesManager.getAuthToken())
                             })
+
                 }
 
 

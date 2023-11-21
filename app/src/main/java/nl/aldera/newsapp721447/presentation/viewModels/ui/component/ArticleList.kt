@@ -75,13 +75,14 @@ fun ArticleList(
                         it
                     )
                 } == false) {
+                Log.d("favorite list added from ArticleList: ", favArticlesListViewModel.favArticlesList.value.toString())
                 article.Id.let { favArticlesListViewModel.addFavArticle(it) }
             }
         }
 
     }
 
-    Log.d("favorite articles", favArticlesListViewModel.favArticlesList.value.toString())
+    Log.d("favorite list", favArticlesListViewModel.favArticlesList.value.toString())
 }
 
 //IconButton(

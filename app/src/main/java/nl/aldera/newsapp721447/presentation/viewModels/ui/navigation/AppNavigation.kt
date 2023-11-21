@@ -1,6 +1,8 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.navigation
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.presentation.viewModels.AllFavoriteArticlesContainerViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
@@ -20,6 +23,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticleDetailsPa
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticlesPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
 
+@SuppressLint("StateFlowValueCalledInComposition")
 @Composable
 fun AppNavigation(applicationContext: Context) {
     val navController = rememberNavController()
@@ -27,6 +31,11 @@ fun AppNavigation(applicationContext: Context) {
     val favArticlesListViewModel : FavArticlesListViewModel = viewModel()
     var allFavoriteArticlesContainerViewModel : AllFavoriteArticlesContainerViewModel = viewModel()
     var isFavouritesPage by remember { mutableStateOf(false) }
+
+//    if (SharedPreferencesManager.getAuthToken() != null) {
+//        allFavoriteArticlesContainerViewModel.fetchLikedArticles(SharedPreferencesManager.getAuthToken())
+//    }
+//    Log.d("favorite articles navigation", favArticlesListViewModel.favArticlesList.value.toString())
 
     NavHost(
         navController = navController,
@@ -80,6 +89,8 @@ fun AppNavigation(applicationContext: Context) {
             AccountPage(
                 navController = navController,
                 userViewModel = userViewModel,
+                allFavoriteArticlesContainerViewModel = allFavoriteArticlesContainerViewModel,
+                favArticlesListViewModel = favArticlesListViewModel,
                 applicationContext
 //                username = it.arguments?.getString("username") ?: ""
             )
