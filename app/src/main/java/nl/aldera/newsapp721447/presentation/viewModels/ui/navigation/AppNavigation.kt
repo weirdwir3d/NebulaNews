@@ -2,7 +2,6 @@ package nl.aldera.newsapp721447.presentation.viewModels.ui.navigation
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.presentation.viewModels.AllFavoriteArticlesContainerViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
@@ -61,28 +59,28 @@ fun AppNavigation(context: Context) {
             )
         ) {
             ArticleDetailsPage(
+                navController = navController,
                 Id = it.arguments?.getInt("Id") ?: -1,
-                navController = navController
+                context = context
             ) {
                 navController.popBackStack()
             }
         }
         composable(
             route = "favorites",
-//            arguments = listOf(
-//                navArgument("username") {type = NavType.StringType},
-//                navArgument("token") {type = androidx.navigation.NavType.StringType}
-//            )
         ) {
             FavoritesPage(
-                navController = navController,
-                userViewModel = userViewModel,
+                navController,
+                userViewModel,
                 allFavoriteArticlesContainerViewModel,
                 favArticlesListViewModel,
                 context,
-                onItemClick = {}
-//                username = it.arguments?.getString("username") ?: ""
-            )
+                onItemClick = {
+                    navController.navigate("articles/${it.Id}")
+                }
+            ) {
+                navController.popBackStack()
+            }
         }
         composable(
             route = "account",

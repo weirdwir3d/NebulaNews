@@ -27,12 +27,13 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageStat
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun FavoritesPage(
-    navController : NavController,
+    navController: NavController,
     userViewModel: UserViewModel,
     allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel,
     favArticlesListViewModel: FavArticlesListViewModel,
-    context : Context,
-    onItemClick: (Article) -> Unit
+    context: Context,
+    onItemClick: (Article) -> Unit,
+    function: () -> Boolean
 ) {
     val favArticlesState by allFavoriteArticlesContainerViewModel.state.collectAsState()
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)

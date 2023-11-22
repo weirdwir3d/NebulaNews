@@ -72,7 +72,7 @@ fun AppScaffold(
                     IconButton(onClick = {
                         isDarkMode = toggleDarkMode(sharedPreferences)
                     }) {
-                        val iconResource = if (isDarkMode) R.drawable.dark_mode else R.drawable.light_mode
+                        val iconResource = if (!isDarkMode) R.drawable.dark_mode else R.drawable.light_mode
                         val mode: Painter = painterResource(id = iconResource)
                         Image(painter = mode, contentDescription = null)
                     }
