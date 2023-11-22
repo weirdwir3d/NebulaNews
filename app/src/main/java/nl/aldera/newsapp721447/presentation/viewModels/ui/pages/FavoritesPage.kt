@@ -48,22 +48,23 @@ fun FavoritesPage(
 
     AppScaffold(
         title = "Favorite articles",
-        navController = navController
-        ) {
-        Column(Modifier.padding(it)) {
-            if (SharedPreferencesManager.getAuthToken() != null) {
-                when (val favArticlesState = favArticlesState) {
-                    is FavoritePageState.Loading -> LoadingIndicator()
-                    is FavoritePageState.Success -> ArticleList(
-                        allArticlesContainer = favArticlesState.allArticlesContainer,
-                        favArticlesListViewModel,
-                        onItemClick = onItemClick,
-                        userViewModel,
-                        isDisplaying = true,
-                        isFavouritesPage = true
-                    )
-                    is FavoritePageState.Error -> ErrorMessage()
-                }
+        navController = navController,
+        context = context,
+        content = {
+            Column(Modifier.padding(it)) {
+                if (SharedPreferencesManager.getAuthToken() != null) {
+                    when (val favArticlesState = favArticlesState) {
+                        is FavoritePageState.Loading -> LoadingIndicator()
+                        is FavoritePageState.Success -> ArticleList(
+                            allArticlesContainer = favArticlesState.allArticlesContainer,
+                            favArticlesListViewModel,
+                            onItemClick = onItemClick,
+                            userViewModel,
+                            isDisplaying = true,
+                            isFavouritesPage = true
+                        )
+                        is FavoritePageState.Error -> ErrorMessage()
+                    }
 
 
 
@@ -73,14 +74,13 @@ fun FavoritesPage(
 //
 //                }
 
-            } else {
-                Text("Log in to see your favorite articles")
+                } else {
+                    Text("Log in to see your favorite articles")
+                }
+
             }
-
+            //
         }
-
-
-
-    }
+        )
 
 }

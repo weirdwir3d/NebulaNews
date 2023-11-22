@@ -1,9 +1,14 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.component
 
+import android.content.Context
+import android.content.SharedPreferences
+import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Home
@@ -26,9 +31,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import nl.aldera.newsapp721447.R
+import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,8 +49,12 @@ fun AppScaffold(
     navController : NavController,
     title: String,
     navigation: NavigationType? = null,
-    content: @Composable (PaddingValues) -> Unit
+    content: @Composable (PaddingValues) -> Unit,
+    context : Context
 ) {
+
+    var isDarkMode by remember { mutableStateOf(SharedPreferencesManager.isDarkMode()) }
+    val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
 
     Scaffold(
         topBar = {
@@ -53,7 +69,15 @@ fun AppScaffold(
                             contentDescription = stringResource(R.string.network_refresh)
                         )
                     }
+                    IconButton(onClick = {
+                        isDarkMode = toggleDarkMode(sharedPreferences)
+                    }) {
+                        val iconResource = if (isDarkMode) R.drawable.dark_mode else R.drawable.light_mode
+                        val mode: Painter = painterResource(id = iconResource)
+                        Image(painter = mode, contentDescription = null)
+                    }
                 }
+
             )
         },
         content = content,
@@ -81,6 +105,15 @@ fun AppScaffold(
             )
         }
     )
+}
+
+fun toggleDarkMode(sharedPreferences: SharedPreferences) : Boolean {
+    Log.d("darkmode", "toggling")
+    Log.d("darkmode", "SharedPreferencesManager.isDarkMode(): " + SharedPreferencesManager.isDarkMode().toString())
+    val editor = sharedPreferences.edit().putBoolean("isDarkMode", !SharedPreferencesManager.isDarkMode())
+    editor.apply()
+    Log.d("darkmode", "SharedPreferencesManager.isDarkMode(): " + SharedPreferencesManager.isDarkMode().toString())
+    return SharedPreferencesManager.isDarkMode()
 }
 
 //@Composable

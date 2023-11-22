@@ -25,7 +25,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
-fun AppNavigation(applicationContext: Context) {
+fun AppNavigation(context: Context) {
     val navController = rememberNavController()
     val userViewModel : UserViewModel = viewModel()
     val favArticlesListViewModel : FavArticlesListViewModel = viewModel()
@@ -50,7 +50,8 @@ fun AppNavigation(applicationContext: Context) {
                 allFavoriteArticlesContainerViewModel = allFavoriteArticlesContainerViewModel,
                 favArticlesListViewModel = favArticlesListViewModel,
                 userViewModel = userViewModel,
-                isFavouritesPage = isFavouritesPage
+                isFavouritesPage = isFavouritesPage,
+                context = context
             )
         }
         composable(
@@ -78,7 +79,7 @@ fun AppNavigation(applicationContext: Context) {
                 userViewModel = userViewModel,
                 allFavoriteArticlesContainerViewModel,
                 favArticlesListViewModel,
-                applicationContext,
+                context,
                 onItemClick = {}
 //                username = it.arguments?.getString("username") ?: ""
             )
@@ -91,7 +92,7 @@ fun AppNavigation(applicationContext: Context) {
                 userViewModel = userViewModel,
                 allFavoriteArticlesContainerViewModel = allFavoriteArticlesContainerViewModel,
                 favArticlesListViewModel = favArticlesListViewModel,
-                applicationContext
+                context
 //                username = it.arguments?.getString("username") ?: ""
             )
         }

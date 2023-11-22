@@ -24,42 +24,42 @@ fun ArticleDetailsPage(
     onBackPressed: () -> Unit
 ) {
 
-    val state by viewModel.state.collectAsState()
-
-    LaunchedEffect(Unit) {
-        viewModel.getArticle(Id)
-    }
-
-    AppScaffold(
-        title = "Details",
-        navigation = NavigationType.Back(onBackPressed),
-        navController = navController
-    ) {
-        Column(Modifier.padding(it)) {
-
-//            when (val state = state) {
-//                is ArticleContainerState.Loading -> LoadingIndicator()
-//                is ArticleContainerState.Success -> ArticleList(
-//                    allArticlesContainer = state.allArticlesContainer
-//                )
+//    val state by viewModel.state.collectAsState()
 //
-//                is ArticleContainerState.Error -> ErrorMessage()
+//    LaunchedEffect(Unit) {
+//        viewModel.getArticle(Id)
+//    }
+//
+//    AppScaffold(
+//        title = "Details",
+//        navigation = NavigationType.Back(onBackPressed),
+//        navController = navController
+//    ) {
+//        Column(Modifier.padding(it)) {
+//
+////            when (val state = state) {
+////                is ArticleContainerState.Loading -> LoadingIndicator()
+////                is ArticleContainerState.Success -> ArticleList(
+////                    allArticlesContainer = state.allArticlesContainer
+////                )
+////
+////                is ArticleContainerState.Error -> ErrorMessage()
+////                else -> {}
+////            }
+//
+//            when (val state = state) {
+//                is DetailState.Loading -> LoadingIndicator()
+//                is DetailState.Success -> ArticleDetailsBox(article = state.article)
+////                is DetailState.Success -> ArticleItem(item = state.article) {
+////
+////                }
+//
+//                is DetailState.Error -> ErrorMessage()
 //                else -> {}
 //            }
-
-            when (val state = state) {
-                is DetailState.Loading -> LoadingIndicator()
-                is DetailState.Success -> ArticleDetailsBox(article = state.article)
-//                is DetailState.Success -> ArticleItem(item = state.article) {
-//                    
-//                }
-
-                is DetailState.Error -> ErrorMessage()
-                else -> {}
-            }
-
-        }
-    }
+//
+//        }
+//    }
 
 
 }

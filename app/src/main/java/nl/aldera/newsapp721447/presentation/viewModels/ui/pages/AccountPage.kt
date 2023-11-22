@@ -80,14 +80,15 @@ fun AccountPage(
 
     AppScaffold(
         title = "account",
-        navController = navController
-    ) {
-        Column(verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-        ) {
+        navController = navController,
+        context = context,
+        content = {
+            Column(verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()
+            ) {
                 Column(verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally) {
                     OutlinedTextField(
@@ -157,9 +158,9 @@ fun AccountPage(
 //                            Log.d("favorite articles", "login successful. isLoggedIn: " + SharedPreferencesManager.isLoggedIn() + "token: " + SharedPreferencesManager.getAuthToken())
                             //            if (SharedPreferencesManager.getAuthToken() != null) {
 
-            }
+                        }
 
-                         else {
+                        else {
                             loginResultMessage = "Login failed. Username or password incorrect"
                         }
                     }
@@ -214,8 +215,9 @@ fun AccountPage(
 
 
 
+            }
         }
-    }
+    )
 
 }
 
