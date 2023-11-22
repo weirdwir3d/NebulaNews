@@ -9,6 +9,11 @@ object SharedPreferencesManager {
         sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
     }
 
+    fun isDarkMode(): Boolean {
+        val isDarkMode = sharedPreferences.getBoolean("isDarkMode", false)
+        return isDarkMode
+    }
+
     fun getUserName() : String? {
         val UserName = sharedPreferences.getString("UserName", null)
         return UserName

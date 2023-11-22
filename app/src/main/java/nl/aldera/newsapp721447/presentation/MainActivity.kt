@@ -2,6 +2,7 @@ package nl.aldera.newsapp721447.presentation
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -22,10 +23,13 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.theme.NewsApp721447The
 class MainActivity : ComponentActivity() {
     @SuppressLint("StateFlowValueCalledInComposition")
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         SharedPreferencesManager.init(this)
+        super.onCreate(savedInstanceState)
+
         setContent {
-            NewsApp721447Theme {
+
+            var isDarkMode by remember { mutableStateOf(SharedPreferencesManager.isDarkMode()) }
+            NewsApp721447Theme(darkTheme = isDarkMode) {
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),

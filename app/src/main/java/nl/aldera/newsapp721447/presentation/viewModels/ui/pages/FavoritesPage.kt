@@ -27,12 +27,13 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageStat
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun FavoritesPage(
-    navController : NavController,
+    navController: NavController,
     userViewModel: UserViewModel,
     allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel,
     favArticlesListViewModel: FavArticlesListViewModel,
-    context : Context,
-    onItemClick: (Article) -> Unit
+    context: Context,
+    onItemClick: (Article) -> Unit,
+    function: () -> Boolean
 ) {
     val favArticlesState by allFavoriteArticlesContainerViewModel.state.collectAsState()
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
@@ -48,22 +49,23 @@ fun FavoritesPage(
 
     AppScaffold(
         title = "Favorite articles",
-        navController = navController
-        ) {
-        Column(Modifier.padding(it)) {
-            if (SharedPreferencesManager.getAuthToken() != null) {
-                when (val favArticlesState = favArticlesState) {
-                    is FavoritePageState.Loading -> LoadingIndicator()
-                    is FavoritePageState.Success -> ArticleList(
-                        allArticlesContainer = favArticlesState.allArticlesContainer,
-                        favArticlesListViewModel,
-                        onItemClick = onItemClick,
-                        userViewModel,
-                        isDisplaying = true,
-                        isFavouritesPage = true
-                    )
-                    is FavoritePageState.Error -> ErrorMessage()
-                }
+        navController = navController,
+        context = context,
+        content = {
+            Column(Modifier.padding(it)) {
+                if (SharedPreferencesManager.getAuthToken() != null) {
+                    when (val favArticlesState = favArticlesState) {
+                        is FavoritePageState.Loading -> LoadingIndicator()
+                        is FavoritePageState.Success -> ArticleList(
+                            allArticlesContainer = favArticlesState.allArticlesContainer,
+                            favArticlesListViewModel,
+                            onItemClick = onItemClick,
+                            userViewModel,
+                            isDisplaying = true,
+                            isFavouritesPage = true
+                        )
+                        is FavoritePageState.Error -> ErrorMessage()
+                    }
 
 
 
@@ -73,14 +75,13 @@ fun FavoritesPage(
 //
 //                }
 
-            } else {
-                Text("Log in to see your favorite articles")
+                } else {
+                    Text("Log in to see your favorite articles")
+                }
+
             }
-
+            //
         }
-
-
-
-    }
+        )
 
 }

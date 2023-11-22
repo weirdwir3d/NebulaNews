@@ -1,6 +1,7 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.pages
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -38,7 +39,8 @@ fun ArticlesPage(
     favArticlesListViewModel: FavArticlesListViewModel,
     userViewModel: UserViewModel,
     isFavouritesPage : Boolean,
-    onItemClick: (Article) -> Unit
+    onItemClick: (Article) -> Unit,
+    context : Context
 ) {
     val favArticlesState by favArticlesListViewModel.favArticlesList.collectAsState()
     val favArticlesSize by remember { mutableStateOf(favArticlesListViewModel.getSize()) }
@@ -71,23 +73,24 @@ fun ArticlesPage(
 
     AppScaffold(
         title = "Home",
-        navController = navController
-    ) {
-        Column(Modifier.padding(it)) {
+        navController = navController,
+        context = context,
+        content = {
+            Column(Modifier.padding(it)) {
 
-            when (val articlesState = articlesState) {
-                is HomePageState.Loading -> LoadingIndicator()
-                is HomePageState.Success -> ArticleList(
-                    allArticlesContainer = articlesState.allArticlesContainer,
-                    favArticlesListViewModel,
-                    onItemClick = onItemClick,
-                    userViewModel,
-                    isDisplaying = true,
-                    isFavouritesPage = false
-                )
+                when (val articlesState = articlesState) {
+                    is HomePageState.Loading -> LoadingIndicator()
+                    is HomePageState.Success -> ArticleList(
+                        allArticlesContainer = articlesState.allArticlesContainer,
+                        favArticlesListViewModel,
+                        onItemClick = onItemClick,
+                        userViewModel,
+                        isDisplaying = true,
+                        isFavouritesPage = false
+                    )
 
-                is HomePageState.Error -> ErrorMessage()
-            }
+                    is HomePageState.Error -> ErrorMessage()
+                }
 
 //            if (SharedPreferencesManager.getAuthToken() != null) {
 //                Log.d("favorites", "showing fav articles")
@@ -107,9 +110,9 @@ fun ArticlesPage(
 //            }
 
 
+            }
         }
-
-    }
+    )
 
 
     LaunchedEffect(Unit) {
