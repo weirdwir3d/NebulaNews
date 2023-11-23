@@ -158,10 +158,12 @@ fun ArticleItem(
                         Icon(
                             imageVector = when {
                                 favArticlesListViewModel.favArticlesList.value.contains(item.Id) -> {
+                                    Log.d("maronn", "liked")
                                     // Use the filled favorite icon
                                     Icons.Filled.Favorite
                                 }
                                 else -> {
+                                    Log.d("maronn", "disliked")
                                     // Use the outlined favorite border icon
                                     Icons.Outlined.FavoriteBorder
                                 }
@@ -220,6 +222,7 @@ suspend fun toggleFavorite(
     } else {
         response = api.likeArticle(Id).awaitResponse()
         val responseStatusCode = response.code()
+        favArticlesListViewModel.addFavArticle(Id)
         Log.d("debug", "liked")
         Log.d("debug", "response status code: $responseStatusCode")
         Log.d("debug", favArticlesListViewModel.fetchFavoriteArticles().toString())

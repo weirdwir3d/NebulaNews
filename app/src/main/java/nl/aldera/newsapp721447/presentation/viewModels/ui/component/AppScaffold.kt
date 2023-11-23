@@ -10,7 +10,9 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
@@ -89,17 +91,17 @@ fun AppScaffold(
                     IconButton(onClick = {
                         navController.navigate("articles")
                     }) {
-                        Icon(imageVector = Icons.Outlined.Home, contentDescription = stringResource(R.string.homepage_title))
+                        Icon(imageVector = Icons.Filled.Home, contentDescription = stringResource(R.string.homepage_title))
                     }
                     IconButton(onClick = {
                         navController.navigate("favorites")
                     }) {
-                        Icon(imageVector = Icons.Outlined.FavoriteBorder, contentDescription = stringResource(R.string.favourites_page_title))
+                        Icon(imageVector = Icons.Filled.Favorite, contentDescription = stringResource(R.string.favourites_page_title))
                     }
                     IconButton(onClick = {
                         navController.navigate("account")
                     }) {
-                        Icon(imageVector = Icons.Outlined.AccountCircle, contentDescription = stringResource(R.string.account_page_title))
+                        Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = stringResource(R.string.account_page_title))
                     }
                 }
             )
