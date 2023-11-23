@@ -1,5 +1,6 @@
 package nl.aldera.newsapp721447.data.mapper
 
+import android.util.Log
 import nl.aldera.newsapp721447.data.model.AllArticlesContainer
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.data.model.Category
@@ -21,6 +22,8 @@ class SingleArticleMapper {
             Related = result.Results[0].Related,
             Summary = result.Results[0].Summary,
             Url = result.Results[0].Url)
+
+        Log.d("categories", article.Categories.toString())
 
         return runCatching {
             article

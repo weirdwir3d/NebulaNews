@@ -74,7 +74,6 @@ class ArticleViewModel @Inject constructor(
         }
             .map(responseMapper::map).flatten()
             .map(singleArticleMapper::mapOneArticle).flatten()
-
     }
 
 //    suspend fun getArticle(articleId : Int): Result<Article> {
