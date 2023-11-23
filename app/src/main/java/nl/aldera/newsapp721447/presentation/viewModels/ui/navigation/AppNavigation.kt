@@ -61,7 +61,8 @@ fun AppNavigation(context: Context) {
             ArticleDetailsPage(
                 navController = navController,
                 Id = it.arguments?.getInt("Id") ?: -1,
-                context = context
+                context = context,
+                favArticlesListViewModel = favArticlesListViewModel
             ) {
                 navController.popBackStack()
             }
