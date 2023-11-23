@@ -33,7 +33,7 @@ class AllArticlesContainerViewModel: ViewModel() {
         refresh()
     }
 
-    private fun refresh() {
+    fun refresh() {
         viewModelScope.launch {
             mutableState.tryEmit(HomePageState.Loading)
             val articlesContainer = getArticles()

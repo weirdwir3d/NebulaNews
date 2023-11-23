@@ -37,7 +37,6 @@ fun ArticleList(
     isFavouritesPage : Boolean
 ) {
 
-
     val favArticlesMutableState = MutableStateFlow<List<Int>>(emptyList())
 //    val favArticlesState: StateFlow<FavoriteListState> = favArticlesMutableState
 //    val favArticlesMutableState = MutableStateFlow<FavoriteListState>(FavoriteListState())

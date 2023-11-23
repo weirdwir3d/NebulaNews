@@ -102,5 +102,7 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx")
     implementation("androidx.compose.runtime:runtime-livedata:1.5.4")
 
+    implementation("androidx.compose.material:material:1.3.0-beta01")
+
 
 }
