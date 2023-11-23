@@ -104,7 +104,8 @@ fun ArticleDetailsBox(
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(16.dp),
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -112,17 +113,17 @@ fun ArticleDetailsBox(
         if (date != null) {
             Text(
                 text = date,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier
-                    .padding(16.dp)
+                    .padding(start = 16.dp, top = 8.dp)
             )
         }
 
         Text(
             text = article.Categories.toString(),
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.labelMedium,
             modifier = Modifier
-                .padding(16.dp)
+                .padding(start = 16.dp, bottom = 8.dp)
         )
 
         Text(
@@ -174,7 +175,7 @@ fun ArticleDetailsBox(
         }
 
         var mAnnotatedLinkString: AnnotatedString? = null
-        Box(modifier = Modifier.padding(16.dp)) {
+        Box(modifier = Modifier.padding(4.dp)) {
             mAnnotatedLinkString = buildAnnotatedString {
 //                val url = article.Url ?: ""
 
@@ -224,6 +225,8 @@ fun ArticleDetailsBox(
                     }
                 )
             }
+
+            Spacer(modifier = Modifier.size(24.dp))
 
                 Text(text = "Related:", style = MaterialTheme.typography.bodyMedium)
                 for (item in article.Related!!) {

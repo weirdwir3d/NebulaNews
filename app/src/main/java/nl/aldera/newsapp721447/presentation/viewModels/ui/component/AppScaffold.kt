@@ -4,11 +4,16 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.BottomNavigation
+import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
@@ -41,6 +46,9 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.currentBackStackEntryAsState
 import nl.aldera.newsapp721447.R
 import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 
@@ -57,6 +65,12 @@ fun AppScaffold(
 
     var isDarkMode by remember { mutableStateOf(SharedPreferencesManager.isDarkMode()) }
     val sharedPreferences = context.getSharedPreferences("app_prefs", Context.MODE_PRIVATE)
+
+    val items = listOf(
+        Screen.Home,
+        Screen.Favorites,
+        Screen.Account
+    )
 
     Scaffold(
         topBar = {
@@ -78,27 +92,127 @@ fun AppScaffold(
         content = content,
 
         bottomBar = {
-            AppScaffoldBottomBar(
-                title = title,
-                actions = {
-                    IconButton(onClick = {
-                        navController.navigate("articles")
-                    }) {
-                        Icon(imageVector = Icons.Filled.Home, contentDescription = stringResource(R.string.homepage_title))
-                    }
-                    IconButton(onClick = {
-                        navController.navigate("favorites")
-                    }) {
-                        Icon(imageVector = Icons.Filled.Favorite, contentDescription = stringResource(R.string.favourites_page_title))
-                    }
-                    IconButton(onClick = {
-                        navController.navigate("account")
-                    }) {
-                        Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = stringResource(R.string.account_page_title))
-                    }
+            BottomNavigation(
+                backgroundColor = MaterialTheme.colorScheme.primary
+            ) {
+                val navBackStackEntry by navController.currentBackStackEntryAsState()
+                val currentDestination = navBackStackEntry?.destination
+                items.forEach { screen ->
+                    BottomNavigationItem(
+                        icon = {
+                               when (screen) {
+                                   is Screen.Home -> Icon(Icons.Filled.Home, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
+                                   is Screen.Favorites -> Icon(Icons.Filled.Favorite, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
+                                   is Screen.Account -> Icon(Icons.Filled.AccountCircle, contentDescription = null, tint = MaterialTheme.colorScheme.secondary)
+                               }
+
+                        },
+                        label = { Text(stringResource(screen.resourceId), color = MaterialTheme.colorScheme.secondary) },
+                        selectedContentColor = MaterialTheme.colorScheme.tertiary,
+                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        onClick = {
+                            navController.navigate(screen.route) {
+                                // Pop up to the start destination of the graph to
+                                // avoid building up a large stack of destinations
+                                // on the back stack as users select items
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
+                                // Avoid multiple copies of the same destination when
+                                // reselecting the same item
+                                launchSingleTop = true
+                                // Restore state when reselecting a previously selected item
+                                restoreState = true
+                            }
+                        },
+                    )
                 }
-            )
+            }
         }
+//        {
+//            AppScaffoldBottomBar(
+//                title = title,
+//                actions = {
+//                    Row(horizontalArrangement = Arrangement.SpaceEvenly,
+//                        modifier = Modifier.fillMaxWidth()) {
+//                        IconButton(onClick = {
+//                            navController.navigate("articles")
+//                        }) {
+//                            Icon(imageVector = Icons.Filled.Home, contentDescription = stringResource(R.string.homepage_title))
+//                        }
+//                        IconButton(onClick = {
+//                            navController.navigate("favorites")
+//                        }) {
+//                            Icon(imageVector = Icons.Filled.Favorite, contentDescription = stringResource(R.string.favourites_page_title))
+//                        }
+//                        IconButton(onClick = {
+//                            navController.navigate("account")
+//                        }) {
+//                            Icon(imageVector = Icons.Filled.AccountCircle, contentDescription = stringResource(R.string.account_page_title))
+//                        }
+//                    }
+//                }
+//            )
+//        }
+    )
+}
+
+//@OptIn(ExperimentalMaterial3Api::class)
+//fun scaff() {
+//    Scaffold(
+//        bottomBar = {
+//            BottomNavigation {
+//                val navBackStackEntry by navController.currentBackStackEntryAsState()
+//                val currentDestination = navBackStackEntry?.destination
+//                items.forEach { screen ->
+//                    BottomNavigationItem(
+//                        icon = { Icon(Icons.Filled.Favorite, contentDescription = null) },
+//                        label = { Text(stringResource(screen.resourceId)) },
+//                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+//                        onClick = {
+//                            navController.navigate(screen.route) {
+//                                // Pop up to the start destination of the graph to
+//                                // avoid building up a large stack of destinations
+//                                // on the back stack as users select items
+//                                popUpTo(navController.graph.findStartDestination().id) {
+//                                    saveState = true
+//                                }
+//                                // Avoid multiple copies of the same destination when
+//                                // reselecting the same item
+//                                launchSingleTop = true
+//                                // Restore state when reselecting a previously selected item
+//                                restoreState = true
+//                            }
+//                        }
+//                    )
+//                }
+//            }
+//        }
+//    ) { innerPadding ->
+//        NavHost(navController, startDestination = Screen.Profile.route, Modifier.padding(innerPadding)) {
+//            composable(Screen.Profile.route) { Profile(navController) }
+//            composable(Screen.FriendsList.route) { FriendsList(navController) }
+//        }
+//    }
+//}
+
+
+
+
+@Composable
+fun AppScaffoldBottomBar(
+    title: String,
+//    navigation: NavigationType?,
+    actions: @Composable RowScope.() -> Unit
+) {
+
+    BottomAppBar(
+        modifier = Modifier
+            .fillMaxHeight(0.1f),
+        actions = actions,
+
+        containerColor = MaterialTheme.colorScheme.primary,
+        contentColor = MaterialTheme.colorScheme.secondary
     )
 }
 
@@ -127,31 +241,6 @@ fun toggleDarkMode(sharedPreferences: SharedPreferences) : Boolean {
 //        )
 //    }
 //}
-
-
-@Composable
-fun AppScaffoldBar() {
-    //
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun AppScaffoldBottomBar(
-    title: String,
-//    navigation: NavigationType?,
-    actions: @Composable RowScope.() -> Unit
-) {
-
-    BottomAppBar(
-        modifier = Modifier
-
-            .fillMaxHeight(0.1f),
-        actions = actions,
-
-        containerColor = MaterialTheme.colorScheme.primary,
-        contentColor = MaterialTheme.colorScheme.secondary
-    )
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

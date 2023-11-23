@@ -29,7 +29,7 @@ class MainActivity : ComponentActivity() {
         setContent {
 
             var isDarkMode by remember { mutableStateOf(SharedPreferencesManager.isDarkMode()) }
-            NewsApp721447Theme(darkTheme = isDarkMode) {
+            NewsApp721447Theme(darkTheme = !isDarkMode) {
 
                 Surface(
                     modifier = Modifier.fillMaxSize(),

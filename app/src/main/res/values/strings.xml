@@ -3,8 +3,8 @@
     <string name="app_name">NebulaNews</string>
     <string name="network_refresh">Refreshing page</string>
     <string name="homepage_title">Home</string>
-    <string name="favourites_page_title">Favourite articles</string>
-    <string name="account_page_title">Home</string>
+    <string name="favourites_page_title">Favourites</string>
+    <string name="account_page_title">Account</string>
 
     <string name="general_unknown_error">Unknown error</string>
 
