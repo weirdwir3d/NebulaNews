@@ -84,7 +84,7 @@ fun ArticleDetailsPage(
                             }
                             Log.d("deets", isFavorite.toString())
                             if (isFavorite != null) {
-                                ArticleDetailsBox(articleState.article, isFavorite, favArticlesListViewModel)
+                                ArticleDetailsBox(articleState.article, isFavorite, favArticlesListViewModel, context)
                             }
                         }
                         is DetailState.Error -> ErrorMessage()

@@ -175,6 +175,7 @@ fun ArticleItem(
 
             }
 
+        Log.d("categories", item.Related.toString())
 
     }
 }

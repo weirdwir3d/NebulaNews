@@ -65,13 +65,6 @@ fun AppScaffold(
                 navigation = navigation,
                 actions = {
                     IconButton(onClick = {
-                    }) {
-                        Icon(
-                            imageVector = Icons.Filled.Refresh,
-                            contentDescription = stringResource(R.string.network_refresh)
-                        )
-                    }
-                    IconButton(onClick = {
                         isDarkMode = toggleDarkMode(sharedPreferences)
                     }) {
                         val iconResource = if (!isDarkMode) R.drawable.dark_mode else R.drawable.light_mode

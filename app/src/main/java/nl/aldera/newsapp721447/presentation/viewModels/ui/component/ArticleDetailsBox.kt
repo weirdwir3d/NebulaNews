@@ -1,5 +1,6 @@
 package nl.aldera.newsapp721447.presentation.viewModels.ui.component
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
@@ -8,6 +9,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -19,6 +22,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -59,15 +63,19 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.awaitResponse
 import retrofit2.converter.gson.GsonConverterFactory
+import java.text.SimpleDateFormat
 import java.time.format.TextStyle
+import java.util.Locale
 
 @Composable
 fun ArticleDetailsBox(
     article: Article,
     isFavoriteOnFirstAccess: Boolean,
     favArticlesListViewModel : FavArticlesListViewModel,
+    context : Context
 ) {
 
+    var url by remember { mutableStateOf(article.Url) }
     var isFavorite by remember { mutableStateOf(isFavoriteOnFirstAccess) }
 //    Log.d("favorite list main page", favArticlesListViewModel.fetchFavoriteArticles().toString())
 
@@ -100,6 +108,23 @@ fun ArticleDetailsBox(
             )
         }
 
+        val date = article.PublishDate?.let { formatDate(it) }
+        if (date != null) {
+            Text(
+                text = date,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier
+                    .padding(16.dp)
+            )
+        }
+
+        Text(
+            text = article.Categories.toString(),
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .padding(16.dp)
+        )
+
         Text(
             modifier = Modifier.padding(16.dp),
             textAlign = TextAlign.Justify,
@@ -107,11 +132,11 @@ fun ArticleDetailsBox(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        Column(
+        Row(
             modifier = Modifier
-                .fillMaxWidth(),// Expand the column to fill its parent container
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .fillMaxWidth(), // Expand the column to fill its parent container
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             if (SharedPreferencesManager.getAuthToken() != null) {
                 IconButton(onClick = {
@@ -132,21 +157,35 @@ fun ArticleDetailsBox(
                             .size(140.dp) // Set the size of the icon as needed
                     )
                 }
+                
+                IconButton(onClick = {
+                    url?.let { context.shareLink(it) }
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Share,
+                        contentDescription = "Share",
+                        tint = MaterialTheme.colorScheme.primary, // Set the color of the icon
+                        modifier = Modifier
+                            .size(140.dp)
+                    )
+                }
             }
 
         }
 
         var mAnnotatedLinkString: AnnotatedString? = null
-        Box(modifier = Modifier.padding(start = 16.dp)) {
+        Box(modifier = Modifier.padding(16.dp)) {
             mAnnotatedLinkString = buildAnnotatedString {
-                val url = article.Url ?: ""
+//                val url = article.Url ?: ""
 
                 // append the clickable text without a Text element
                 // this avoids duplicating the text and simplifies the code
-                pushStringAnnotation(
-                    tag = "URL",
-                    annotation = url
-                )
+                url?.let {
+                    pushStringAnnotation(
+                        tag = "URL",
+                        annotation = it
+                    )
+                }
 
                 withStyle(
                     style = SpanStyle(
@@ -185,10 +224,42 @@ fun ArticleDetailsBox(
                     }
                 )
             }
+
+                Text(text = "Related:", style = MaterialTheme.typography.bodyMedium)
+                for (item in article.Related!!) {
+                    mAnnotatedLinkString?.let {
+                        ClickableText(
+                            text = it,
+                            onClick = { offset ->
+                                mAnnotatedLinkString!!.getStringAnnotations("URL", offset, offset)
+                                    .firstOrNull()?.let { stringAnnotation ->
+                                        mUriHandler.openUri(stringAnnotation.item)
+                                    }
+                            }
+                        )
+                    }
+                    Spacer(modifier = Modifier.size(10.dp))
+                }
+
+
         }
 
 
     }
+}
+
+fun Context.shareLink(url : String) {
+    val sendIntent = Intent(
+        Intent.ACTION_SEND
+    ).apply {
+        putExtra(Intent.EXTRA_TEXT, url)
+        type = "text/plain"
+    }
+    val shareIntent = Intent.createChooser(
+        sendIntent, null
+    )
+    shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    startActivity(shareIntent)
 }
 
 suspend fun toggleFavourite(
@@ -246,4 +317,11 @@ suspend fun toggleFavourite(
         newFavValue = true
     }
     return newFavValue
+}
+
+fun formatDate(dateString: String) : String? {
+    val input = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
+    val output = SimpleDateFormat("dd MMMM yyyy HH:mm", Locale.ENGLISH)
+    val date = input.parse(dateString)
+    return date?.let { output.format(it) }
 }
