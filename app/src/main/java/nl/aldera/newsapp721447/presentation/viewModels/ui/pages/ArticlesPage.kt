@@ -4,7 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -13,6 +19,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import nl.aldera.newsapp721447.presentation.viewModels.AllArticlesContainerViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
@@ -30,6 +37,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoriteListStat
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.HomePageState
 
+@OptIn(ExperimentalMaterialApi::class)
 @SuppressLint("ServiceCast")
 @Composable
 fun ArticlesPage(
@@ -51,6 +59,15 @@ fun ArticlesPage(
     Log.d("state main", favArticlesState.toString())
     SharedPreferencesManager.getAuthToken()?.let { Log.d("token: ", it) }
     val articlesState by articlesViewModel.state.collectAsState()
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = refreshing(articlesState,
+            favArticlesListViewModel,
+            onItemClick = {
+                navController.navigate("articles/${it.Id}")
+            }, userViewModel),
+        onRefresh = { articlesViewModel.refresh() }
+    )
 
     LaunchedEffect(favArticlesSize) {
         Log.d("favorite list changed", favArticlesSize.toString())
@@ -76,7 +93,10 @@ fun ArticlesPage(
         navController = navController,
         context = context,
         content = {
-            Column(Modifier.padding(it)) {
+            Column(Modifier
+                .padding(it)
+                .pullRefresh(pullRefreshState)
+            ) {
 
                 when (val articlesState = articlesState) {
                     is HomePageState.Loading -> LoadingIndicator()
@@ -111,9 +131,15 @@ fun ArticlesPage(
 
 
             }
+
+            PullRefreshIndicator(
+                refreshing = true,
+                state = pullRefreshState,
+                modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.TopCenter)
+            )
+
         }
     )
-
 
     LaunchedEffect(Unit) {
         if (SharedPreferencesManager.getAuthToken() != null) {
@@ -134,6 +160,28 @@ fun ArticlesPage(
         }
     }
 
+}
+@Composable
+fun refreshing(
+    articlesState : HomePageState,
+    favArticlesListViewModel: FavArticlesListViewModel,
+    onItemClick: (Article) -> Unit,
+    userViewModel: UserViewModel
+) : Boolean {
+    when (val articlesState = articlesState) {
+        is HomePageState.Loading -> return true
+        is HomePageState.Success -> {ArticleList(
+            allArticlesContainer = articlesState.allArticlesContainer,
+            favArticlesListViewModel,
+            onItemClick = onItemClick,
+            userViewModel,
+            isDisplaying = true,
+            isFavouritesPage = false
+        )
+            return false
+        }
+        is HomePageState.Error -> return false
+    }
 }
 
 
