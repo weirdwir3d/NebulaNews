@@ -5,6 +5,7 @@ package com.wearetriple.exercise6.ui.page.main.component
 import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -80,10 +81,11 @@ fun ArticleItem(
         onClick = onClick,
         modifier = Modifier
 //            .background(MaterialTheme.colorScheme.tertiary)
+//            .border(1.dp, MaterialTheme.colorScheme.primary)
             .fillMaxWidth()
             .padding(4.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.tertiary
+            containerColor = MaterialTheme.colorScheme.secondary,
         )
 //            .background(MaterialTheme.colorScheme.tertiary)
     ) {
@@ -116,7 +118,7 @@ fun ArticleItem(
                         Text(
                             text = it,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.secondary,
+                            color = MaterialTheme.colorScheme.primary,
                             maxLines = 3,
                             overflow = TextOverflow.Clip
                         )
@@ -168,7 +170,8 @@ fun ArticleItem(
                                     Icons.Outlined.FavoriteBorder
                                 }
                             },
-                            contentDescription = stringResource(R.string.favorite_icon)
+                            contentDescription = stringResource(R.string.favorite_icon),
+                            tint = MaterialTheme.colorScheme.tertiary
                         )
                     }
                 }

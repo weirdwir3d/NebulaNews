@@ -89,7 +89,7 @@ fun ArticlesPage(
     }
 
     AppScaffold(
-        title = "Home",
+        title = "NebulaNews",
         navController = navController,
         context = context,
         content = {

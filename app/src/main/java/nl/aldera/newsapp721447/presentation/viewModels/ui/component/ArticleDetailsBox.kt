@@ -165,7 +165,7 @@ fun ArticleDetailsBox(
                     Icon(
                         imageVector = Icons.Filled.Share,
                         contentDescription = "Share",
-                        tint = MaterialTheme.colorScheme.primary, // Set the color of the icon
+                        tint = MaterialTheme.colorScheme.tertiary, // Set the color of the icon
                         modifier = Modifier
                             .size(140.dp)
                     )
