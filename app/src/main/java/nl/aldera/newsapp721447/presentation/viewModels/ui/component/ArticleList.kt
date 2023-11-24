@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.StateFlow
 import nl.aldera.newsapp721447.data.model.AllArticlesContainer
 import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.FeedsListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoriteListState
 
@@ -31,12 +32,14 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoriteListStat
 fun ArticleList(
     allArticlesContainer: AllArticlesContainer,
     favArticlesListViewModel : FavArticlesListViewModel,
+    feedsListViewModel: FeedsListViewModel,
     onItemClick: (Article) -> Unit,
     userViewModel: UserViewModel,
     isDisplaying : Boolean,
     isFavouritesPage : Boolean
 ) {
 
+    val selectedFeedState by feedsListViewModel.selectedFeedState.collectAsState()
     val favArticlesMutableState = MutableStateFlow<List<Int>>(emptyList())
 //    val favArticlesState: StateFlow<FavoriteListState> = favArticlesMutableState
 //    val favArticlesMutableState = MutableStateFlow<FavoriteListState>(FavoriteListState())
@@ -47,6 +50,11 @@ fun ArticleList(
 
             items(allArticlesContainer.Results.size) { index ->
                 val article = allArticlesContainer.Results[index]
+                val articleFeed = article.Feed.toString()
+
+                if (articleFeed.contains(selectedFeedState.toString())) {
+                    article.Title?.let { Log.d("filtering for feed: $selectedFeedState", it) }
+                }
 
                 if (article.IsLiked == true && article.Id?.let {
                         favArticlesListViewModel.contains(
@@ -55,15 +63,24 @@ fun ArticleList(
                     } == false) {
                     article.Id.let { favArticlesListViewModel.addFavArticle(it) }
                 }
-                //            else if (article.IsLiked == true)
 
-                ArticleItem(userViewModel,
-                    favArticlesListViewModel,
-                    isFavouritesPage = isFavouritesPage,
-                    article) {
-                    onItemClick(article)
+                if (selectedFeedState == -1) {
+                    article.Title?.let { Log.d("filtering for feed: $selectedFeedState", it) }
+                    ArticleItem(userViewModel,
+                        favArticlesListViewModel,
+                        isFavouritesPage = isFavouritesPage,
+                        article) {
+                        onItemClick(article)
+                    }
+                } else if (articleFeed.contains(selectedFeedState.toString())) {
+                    article.Title?.let { Log.d("filtering for feed: $selectedFeedState", it) }
+                    ArticleItem(userViewModel,
+                        favArticlesListViewModel,
+                        isFavouritesPage = isFavouritesPage,
+                        article) {
+                        onItemClick(article)
+                    }
                 }
-
 
             }
         }

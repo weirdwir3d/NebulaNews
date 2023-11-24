@@ -12,6 +12,7 @@ import nl.aldera.newsapp721447.data.mapper.ResponseMapper
 import nl.aldera.newsapp721447.data.model.AllArticlesContainer
 import nl.aldera.newsapp721447.extension.flatten
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.HomePageState
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -53,7 +54,6 @@ class AllArticlesContainerViewModel: ViewModel() {
             }
         }
     }
-
 
     suspend fun getArticles(): Result<AllArticlesContainer> {
         return runCatching { api.getArticles() }

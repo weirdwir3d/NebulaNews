@@ -19,6 +19,7 @@ import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.presentation.viewModels.AllFavoriteArticlesContainerViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.FeedsListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.component.AppScaffold
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageState
@@ -29,6 +30,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageStat
 fun FavoritesPage(
     navController: NavController,
     userViewModel: UserViewModel,
+    feedsListViewModel: FeedsListViewModel,
     allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel,
     favArticlesListViewModel: FavArticlesListViewModel,
     context: Context,
@@ -60,7 +62,8 @@ fun FavoritesPage(
                             allArticlesContainer = favArticlesState.allArticlesContainer,
                             favArticlesListViewModel,
                             onItemClick = onItemClick,
-                            userViewModel,
+                            userViewModel = userViewModel,
+                            feedsListViewModel = feedsListViewModel,
                             isDisplaying = true,
                             isFavouritesPage = true
                         )

@@ -117,7 +117,7 @@ fun ArticleItem(
                     item.Title?.let {
                         Text(
                             text = it,
-                            style = MaterialTheme.typography.bodyMedium,
+                            style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary,
                             maxLines = 3,
                             overflow = TextOverflow.Clip

@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import nl.aldera.newsapp721447.presentation.viewModels.AllFavoriteArticlesContainerViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.FeedsListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.AccountPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticleDetailsPage
@@ -27,6 +28,7 @@ fun AppNavigation(context: Context) {
     val navController = rememberNavController()
     val userViewModel : UserViewModel = viewModel()
     val favArticlesListViewModel : FavArticlesListViewModel = viewModel()
+    val feedsListViewModel : FeedsListViewModel = viewModel()
     var allFavoriteArticlesContainerViewModel : AllFavoriteArticlesContainerViewModel = viewModel()
     var isFavouritesPage by remember { mutableStateOf(false) }
 
@@ -49,6 +51,7 @@ fun AppNavigation(context: Context) {
                 favArticlesListViewModel = favArticlesListViewModel,
                 userViewModel = userViewModel,
                 isFavouritesPage = isFavouritesPage,
+                feedsListViewModel = feedsListViewModel,
                 context = context
             )
         }
@@ -73,6 +76,7 @@ fun AppNavigation(context: Context) {
             FavoritesPage(
                 navController,
                 userViewModel,
+                feedsListViewModel,
                 allFavoriteArticlesContainerViewModel,
                 favArticlesListViewModel,
                 context,
