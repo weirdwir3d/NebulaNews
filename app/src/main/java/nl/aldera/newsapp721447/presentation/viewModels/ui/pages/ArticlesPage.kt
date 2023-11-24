@@ -32,7 +32,9 @@ import nl.aldera.newsapp721447.data.model.Article
 import nl.aldera.newsapp721447.data.model.SharedPreferencesManager
 import nl.aldera.newsapp721447.presentation.viewModels.AllFavoriteArticlesContainerViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.FavArticlesListViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.FeedsListViewModel
 import nl.aldera.newsapp721447.presentation.viewModels.UserViewModel
+import nl.aldera.newsapp721447.presentation.viewModels.ui.component.FeedsContainer
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoriteListState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.FavoritePageState
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.HomePageState
@@ -46,10 +48,12 @@ fun ArticlesPage(
     allFavoriteArticlesContainerViewModel: AllFavoriteArticlesContainerViewModel,
     favArticlesListViewModel: FavArticlesListViewModel,
     userViewModel: UserViewModel,
+    feedsListViewModel: FeedsListViewModel,
     isFavouritesPage : Boolean,
     onItemClick: (Article) -> Unit,
     context : Context
 ) {
+    val selectedFeedState by feedsListViewModel.selectedFeedState.collectAsState()
     val favArticlesState by favArticlesListViewModel.favArticlesList.collectAsState()
     val favArticlesSize by remember { mutableStateOf(favArticlesListViewModel.getSize()) }
     var nrFavArticles by remember { mutableStateOf(favArticlesSize) }
@@ -65,7 +69,7 @@ fun ArticlesPage(
             favArticlesListViewModel,
             onItemClick = {
                 navController.navigate("articles/${it.Id}")
-            }, userViewModel),
+            }, userViewModel, feedsListViewModel),
         onRefresh = { articlesViewModel.refresh() }
     )
 
@@ -93,10 +97,15 @@ fun ArticlesPage(
         navController = navController,
         context = context,
         content = {
-            Column(Modifier
-                .padding(it)
-                .pullRefresh(pullRefreshState)
+            Column(
+                Modifier
+                    .padding(it)
+                    .pullRefresh(pullRefreshState)
             ) {
+                FeedsContainer(feedsListViewModel)
+
+                when (val selectedFeedState = selectedFeedState) {
+                }
 
                 when (val articlesState = articlesState) {
                     is HomePageState.Loading -> LoadingIndicator()
@@ -104,13 +113,16 @@ fun ArticlesPage(
                         allArticlesContainer = articlesState.allArticlesContainer,
                         favArticlesListViewModel,
                         onItemClick = onItemClick,
-                        userViewModel,
+                        userViewModel = userViewModel,
+                        feedsListViewModel = feedsListViewModel,
                         isDisplaying = true,
                         isFavouritesPage = false
                     )
 
                     is HomePageState.Error -> ErrorMessage()
                 }
+
+
 
 //            if (SharedPreferencesManager.getAuthToken() != null) {
 //                Log.d("favorites", "showing fav articles")
@@ -135,7 +147,9 @@ fun ArticlesPage(
             PullRefreshIndicator(
                 refreshing = true,
                 state = pullRefreshState,
-                modifier = Modifier.fillMaxWidth().wrapContentSize(Alignment.TopCenter)
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentSize(Alignment.TopCenter)
             )
 
         }
@@ -166,7 +180,8 @@ fun refreshing(
     articlesState : HomePageState,
     favArticlesListViewModel: FavArticlesListViewModel,
     onItemClick: (Article) -> Unit,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    feedsListViewModel: FeedsListViewModel
 ) : Boolean {
     when (val articlesState = articlesState) {
         is HomePageState.Loading -> return true
@@ -174,7 +189,8 @@ fun refreshing(
             allArticlesContainer = articlesState.allArticlesContainer,
             favArticlesListViewModel,
             onItemClick = onItemClick,
-            userViewModel,
+            userViewModel = userViewModel,
+            feedsListViewModel = feedsListViewModel,
             isDisplaying = true,
             isFavouritesPage = false
         )

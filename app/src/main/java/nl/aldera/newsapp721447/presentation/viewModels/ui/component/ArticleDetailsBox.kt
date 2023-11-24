@@ -102,7 +102,7 @@ fun ArticleDetailsBox(
             Text(
                 text = it,
                 textAlign = TextAlign.Start,
-                style = MaterialTheme.typography.titleLarge,
+                style = MaterialTheme.typography.headlineLarge,
                 modifier = Modifier
                     .padding(16.dp),
                 color = MaterialTheme.colorScheme.primary

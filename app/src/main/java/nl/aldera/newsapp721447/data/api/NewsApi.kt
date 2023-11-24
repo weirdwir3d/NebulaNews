@@ -20,6 +20,9 @@ interface NewsApi {
     @GET("api/Articles")
     suspend fun getArticles(): Response<AllArticlesContainer>
 
+    @GET("api/Feeds")
+    suspend fun getFeeds(): Response<List<Any>>
+
     @GET("api/Articles/{Id}")
     suspend fun getArticle(
         @Path("Id") Id: Int
