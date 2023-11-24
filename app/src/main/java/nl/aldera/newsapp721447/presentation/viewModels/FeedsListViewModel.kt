@@ -32,8 +32,10 @@ class FeedsListViewModel : ViewModel() {
     init {
         viewModelScope.launch {
             var responseBody = fetchFeeds().body().toString()
-            val feedList: List<Feed> = responseBody.toFeedList()
+            var feedList: MutableList<Feed> = responseBody.toFeedList()
+            addFeed(Feed(-1.0, "All"))
             Log.d("feeds", feedList.toString())
+//            addFeed(Feed(7.0, "All"))
             for (feed in feedList) {
                 addFeed(feed)
             }
@@ -49,8 +51,8 @@ class FeedsListViewModel : ViewModel() {
         return _feedsList.find { it.Id == Id }
     }
 
-    fun String.toFeedList(): List<Feed> {
-        return Gson().fromJson(this, Array<Feed>::class.java).toList()
+    fun String.toFeedList(): MutableList<Feed> {
+        return Gson().fromJson(this, Array<Feed>::class.java).toMutableList()
     }
 
     fun getFeedsList() : List<Feed> {
@@ -64,14 +66,25 @@ class FeedsListViewModel : ViewModel() {
     fun contains(feed : Feed) : Boolean {
         return _feedsList.contains(feed)
     }
-    fun addFeed(feed : Feed) : Boolean {
+
+    fun addFeed(feed: Feed): Boolean {
         if (!_feedsList.contains(feed)) {
             _feedsList.add(feed)
-            mutableFeedsList.tryEmit(_feedsList.toList())
+            mutableFeedsList.tryEmit(_feedsList.toList()) // Add this line to update the feedsList state variable
             return true
         }
         return false
     }
+
+
+//    fun addFeed(feed: Feed): Boolean {
+//        if (!_feedsList.contains(feed)) {
+//            _feedsList.add(feed)
+//            mutableFeedsList.tryEmit(_feedsList.toList()) // Add this line to update the feedsList state variable
+//            return true
+//        }
+//        return false
+//    }
 
     fun clearList() {
         mutableFeedsList.value = emptyList()
