@@ -104,5 +104,7 @@ dependencies {
 
     implementation("androidx.compose.material:material:1.3.0-beta01")
 
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
 
 }
