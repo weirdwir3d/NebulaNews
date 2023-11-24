@@ -4,11 +4,14 @@ import android.util.Log
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import nl.aldera.newsapp721447.RetrofitInstance
 import nl.aldera.newsapp721447.data.model.Session
+import nl.aldera.newsapp721447.data.model.SharedPreferencesManager.sharedPreferences
 import nl.aldera.newsapp721447.data.model.Token
 import nl.aldera.newsapp721447.presentation.viewModels.ui.model.RegisterMessage
 
@@ -40,32 +43,29 @@ class UserViewModel : ViewModel() {
         return codeResult
     }
 
-    fun loginUser(UserName: String, Password: String) : Int {
-        var codeResult : Int = -1
-        viewModelScope.launch {
+    suspend fun loginUser(UserName: String, Password: String) : String? {
+        var placeholder: String? = null
+        withContext(Dispatchers.IO) {
             val response = RetrofitInstance.newsApi.loginUser(UserName, Password)
             val authToken: String? = response.body()?.AuthToken
+            placeholder = authToken
 
             if (authToken != null) {
                 Log.d("session", "LOGIN SUCCESSFUL. Token =" + authToken.toString() + ", username =" + UserName)
                 sessionMutableState.tryEmit(Session(UserName, authToken))
                 Log.i("INFO", sessionMutableState.value.UserName.toString())
-//                authToken?.let { Token(it) }?.let { tokenMutableState.tryEmit(it) }
-                codeResult = 3
+
+                val preferencesEditor = sharedPreferences.edit()
+                preferencesEditor.putBoolean("isLoggedIn", true)
+                preferencesEditor.putString("AuthToken", placeholder)
+                preferencesEditor.putString("UserName", UserName)
+                preferencesEditor.apply()
+
             } else {
                 Log.e("ERROR", "error while logging in")
-                codeResult = 4
             }
         }
-
-        return codeResult
-    }
-
-    fun logoutUser() {
-        viewModelScope.launch {
-            sessionMutableState.tryEmit(Session(null, null))
-            Log.i("INFO", "LOGOUT SUCCESSFUL" + sessionMutableState.toString())
-        }
+        return placeholder
     }
 
 }

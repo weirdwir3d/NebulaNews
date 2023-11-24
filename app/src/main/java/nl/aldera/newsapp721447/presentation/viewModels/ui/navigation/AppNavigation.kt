@@ -21,6 +21,7 @@ import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.AccountPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticleDetailsPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.ArticlesPage
 import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.FavoritesPage
+import nl.aldera.newsapp721447.presentation.viewModels.ui.pages.LoginPage
 
 @SuppressLint("StateFlowValueCalledInComposition")
 @Composable
@@ -93,10 +94,19 @@ fun AppNavigation(context: Context) {
             AccountPage(
                 navController = navController,
                 userViewModel = userViewModel,
-                allFavoriteArticlesContainerViewModel = allFavoriteArticlesContainerViewModel,
                 favArticlesListViewModel = favArticlesListViewModel,
                 context
 //                username = it.arguments?.getString("username") ?: ""
+            )
+        }
+        composable(
+            route = "login"
+        ) {
+            LoginPage(
+                navController = navController,
+                userViewModel,
+                context = context,
+                favArticlesListViewModel = favArticlesListViewModel
             )
         }
     }
