@@ -85,7 +85,7 @@ fun AccountPage(
 
     if (isLoggedIn) {
         AppScaffold(
-            title = "account",
+            title = "Account",
             navController = navController,
             context = context,
             content = {

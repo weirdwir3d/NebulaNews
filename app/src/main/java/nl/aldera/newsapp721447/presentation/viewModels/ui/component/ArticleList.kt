@@ -41,9 +41,6 @@ fun ArticleList(
 
     val selectedFeedState by feedsListViewModel.selectedFeedState.collectAsState()
     val favArticlesMutableState = MutableStateFlow<List<Int>>(emptyList())
-//    val favArticlesState: StateFlow<FavoriteListState> = favArticlesMutableState
-//    val favArticlesMutableState = MutableStateFlow<FavoriteListState>(FavoriteListState())
-//    val favArticlesState: StateFlow<FavoriteListState> = favArticlesMutableState
 
     if (isDisplaying) {
         LazyColumn(contentPadding = PaddingValues(8.dp)) {

@@ -70,7 +70,7 @@ fun LoginPage(
 
     if (!SharedPreferencesManager.isLoggedIn()) {
         AppScaffold(
-            title = "account",
+            title = "Account",
             navController = navController,
             context = context,
             content = {
