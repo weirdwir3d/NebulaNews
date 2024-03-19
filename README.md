@@ -1,4 +1,4 @@
-# NebulaNews (beta)
+# NebulaNews
 News reader Android application written in Jetpack Compose
 
 This news reader Android application built in Jetpack Compose allows the user to view news articles (fetched by an API provided by Inholland HBO), add them to a list of favourites and much more. The app also comes with the possibility to switch from light to dark theme and viceversa.
